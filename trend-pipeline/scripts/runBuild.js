@@ -66,8 +66,13 @@ async function run() {
       generateProduct(trend),
     ]);
 
-    console.log(`[runBuild] Creating Stripe payment link...`);
-    const stripeUrl = await createPaymentLink(trend);
+    let stripeUrl = '';
+    if (process.env.STRIPE_SECRET_KEY) {
+      console.log(`[runBuild] Creating Stripe payment link...`);
+      stripeUrl = await createPaymentLink(trend);
+    } else {
+      console.log(`[runBuild] Stripe key not set — skipping payment link.`);
+    }
 
     const { data: row, error: searchErr } = await supabase
       .from('products')
