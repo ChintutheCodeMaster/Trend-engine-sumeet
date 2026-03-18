@@ -15,33 +15,18 @@ export async function GET(request: Request) {
     }
   }
 
-  const startTime = Date.now();
   console.log(`[/api/run] Pipeline triggered at ${new Date().toISOString()}`);
 
-  try {
-    // Dynamic require so Next.js doesn't try to bundle google-trends-api at build time
-    const { runPipeline } = require('../../../orchestrator');
-    const results: Array<{ keyword: string; slug?: string; stripeUrl?: string; landingUrl?: string; error?: string }> = await runPipeline();
+  // Fire and forget — don't await so the browser connection isn't held open for 3-5 min
+  (async () => {
+    try {
+      const { runPipeline } = require('../../../orchestrator');
+      await runPipeline();
+      console.log('[/api/run] Pipeline finished');
+    } catch (err) {
+      console.error('[/api/run] Pipeline failed:', err);
+    }
+  })();
 
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    const successful = results.filter(r => !r.error);
-    const failed = results.filter(r => r.error);
-
-    return NextResponse.json({
-      success: true,
-      duration: `${elapsed}s`,
-      productsCreated: successful.length,
-      results: successful.map(r => ({
-        keyword: r.keyword,
-        slug: r.slug,
-        stripeUrl: r.stripeUrl,
-        landingUrl: r.landingUrl
-      })),
-      errors: failed.map(r => ({ keyword: r.keyword, error: r.error }))
-    });
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error(`[/api/run] Pipeline failed: ${message}`);
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
-  }
+  return NextResponse.json({ success: true, status: 'running' });
 }
