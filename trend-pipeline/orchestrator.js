@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
-const { findTrends } = require('./agents/trendAgent');
+const { findLongtailQuestions } = require('./agents/longtailAgent');
 const { generateLanding } = require('./agents/landingAgent');
 const { generateProduct } = require('./agents/productAgent');
 const { createPaymentLink } = require('./agents/stripeAgent');
@@ -20,7 +20,7 @@ async function saveToSupabase(trend, landingCopy, productResult, stripeUrl) {
       slug,
       keyword: trend.keyword,
       category: trend.category,
-      score: trend.score,
+      score: trend.score ?? 0,
       // Structured copy fields (used by API listing)
       headline: landingCopy.headline,
       subheadline: landingCopy.subheadline,
@@ -33,6 +33,9 @@ async function saveToSupabase(trend, landingCopy, productResult, stripeUrl) {
       product_title: productResult.title,
       product_html: productResult.html,
       stripe_url: stripeUrl,
+      // Hayden Library fields
+      evergreen: true,
+      content_type: 'longtail',
     }, { onConflict: 'slug' })
     .select('slug')
     .single();
@@ -43,7 +46,7 @@ async function saveToSupabase(trend, landingCopy, productResult, stripeUrl) {
 }
 
 async function processTrend(trend) {
-  console.log(`\n[orchestrator] ── Processing: "${trend.keyword}" (${trend.category}, score: ${trend.score}) ──`);
+  console.log(`\n[orchestrator] ── Processing: "${trend.keyword}" (${trend.category}) ──`);
 
   // Landing copy + product HTML in parallel (both independent of each other)
   console.log(`[orchestrator]   Running landingAgent + productAgent in parallel...`);
@@ -70,21 +73,31 @@ async function runPipeline() {
   const pipelineStart = Date.now();
 
   console.log('\n╔════════════════════════════════════════╗');
-  console.log('║   TREND → PRODUCT PIPELINE             ║');
+  console.log('║   HAYDEN LIBRARY — LONGTAIL PIPELINE   ║');
   console.log('╚════════════════════════════════════════╝');
   console.log(`  Started: ${new Date().toISOString()}\n`);
 
-  // ── Phase 1: Discover new trends (dedup against Supabase happens inside trendAgent) ──
-  console.log('── Phase 1: Trend Discovery ──');
-  const trends = await findTrends();
-  console.log(`\n  Found ${trends.length} new trend(s) to process.\n`);
+  // ── Phase 1: Generate evergreen long-tail questions ──
+  console.log('── Phase 1: Longtail Question Discovery ──');
+  const questions = await findLongtailQuestions();
 
-  // ── Phase 2: Build products for each new trend ──
+  // Normalise questions into the shape the rest of the pipeline expects
+  const trends = questions.map(q => ({
+    keyword: q.question,
+    category: q.category,
+    score: 0,
+    risingPercent: 0,
+    slug: q.keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80),
+  }));
+
+  console.log(`\n  Generated ${trends.length} longtail question(s) to process.\n`);
+
+  // ── Phase 2: Build products for each question ──
   console.log('── Phase 2: Product Generation ──');
   const newProducts = [];
 
   if (trends.length === 0) {
-    console.log('  No new trends. Skipping product generation.');
+    console.log('  No questions generated. Skipping product generation.');
   } else {
     for (const trend of trends) {
       try {
@@ -116,7 +129,7 @@ async function runPipeline() {
   console.log('║   PIPELINE COMPLETE                    ║');
   console.log('╚════════════════════════════════════════╝');
   console.log(`  Duration:     ${elapsed}s`);
-  console.log(`  New products: ${successNew.length} created, ${failedNew.length} failed`);
+  console.log(`  New documents: ${successNew.length} created, ${failedNew.length} failed`);
   console.log(`  Optimized:    ${successOpt.length} product(s) improved\n`);
 
   successNew.forEach((r, i) => {
