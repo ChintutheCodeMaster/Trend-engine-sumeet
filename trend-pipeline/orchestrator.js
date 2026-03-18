@@ -56,7 +56,12 @@ async function processTrend(trend) {
   ]);
   console.log(`[orchestrator]   Both generated. Creating Stripe payment link...`);
 
-  const stripeUrl = await createPaymentLink(trend);
+  let stripeUrl = '';
+  if (process.env.STRIPE_SECRET_KEY) {
+    stripeUrl = await createPaymentLink(trend);
+  } else {
+    console.log(`[orchestrator]   Stripe key not set — skipping payment link.`);
+  }
   const slug = await saveToSupabase(trend, landingCopy, productResult, stripeUrl);
 
   return {
