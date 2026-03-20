@@ -1,30 +1,48 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+function getSupabase() {
+  return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
+}
 
 export async function GET(
   _request: Request,
   { params }: { params: { jobId: string } }
 ) {
   const { jobId } = params;
+  if (!jobId) return NextResponse.json({ error: 'Missing jobId' }, { status: 400 });
 
-  if (!jobId) {
-    return NextResponse.json({ error: 'Missing jobId' }, { status: 400 });
+  const supabase = getSupabase();
+
+  const { data: job, error } = await supabase
+    .from('build_jobs')
+    .select('id, status, product_slug')
+    .eq('id', jobId)
+    .single();
+
+  if (error || !job) {
+    return NextResponse.json({ error: 'Job not found' }, { status: 404 });
   }
 
-  try {
-    const { getJobStatus } = require('../../../../../agents/searchAgent');
-    const job = await getJobStatus(jobId);
+  console.log(`[status] jobId=${jobId} status=${job.status} slug=${job.product_slug}`);
 
-    if (!job) {
-      return NextResponse.json({ error: 'Job not found' }, { status: 404 });
-    }
+  if (job.status === 'ready' && job.product_slug) {
+    const { data: product } = await supabase
+      .from('products')
+      .select('slug, keyword, headline, subheadline, stripe_url, category')
+      .eq('slug', job.product_slug)
+      .single();
 
     return NextResponse.json({
-      status: job.status,
-      productSlug: job.product_slug ?? null,
+      status: 'ready',
+      productSlug: job.product_slug,
+      product: product ?? null,
     });
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    console.error('[/api/search/status] Error:', message);
-    return NextResponse.json({ error: message }, { status: 500 });
   }
+
+  return NextResponse.json({
+    status: job.status,
+    productSlug: job.product_slug ?? null,
+    product: null,
+  });
 }

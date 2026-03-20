@@ -33,7 +33,7 @@ export async function generateMetadata(
   const meta = CATEGORY_META[params.category];
   if (!meta) return { title: 'Not Found' };
   return {
-    title: `${meta.label} — Hayden Library`,
+    title: `${meta.label} — Hidden Library`,
     description: meta.description,
   };
 }

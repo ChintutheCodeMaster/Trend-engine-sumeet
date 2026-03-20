@@ -3,6 +3,12 @@
  * Runs completely outside Next.js so no fetch patching, no hot-reload interference.
  *
  * Usage: node scripts/runBuild.js <jobId> <base64EncodedQuery>
+ *
+ * Two-phase build:
+ *   Phase 1 — landingAgent only → save product → mark job 'ready'  (~45s)
+ *   Phase 2 — productAgent with retry → update product when done    (~3-5 min)
+ *
+ * The search UI unblocks after Phase 1. Phase 2 completes silently in the background.
  */
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 
@@ -35,6 +41,29 @@ function queryToSlug(query) {
   return query.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
 }
 
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+// Retries productAgent up to maxAttempts times with backoff
+async function generateProductWithRetry(trend, maxAttempts = 3) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      console.log(`[runBuild] productAgent attempt ${attempt}/${maxAttempts}...`);
+      return await generateProduct(trend);
+    } catch (err) {
+      console.error(`[runBuild] productAgent attempt ${attempt} failed: ${err.message}`);
+      if (attempt < maxAttempts) {
+        const wait = attempt * 15000; // 15s, 30s
+        console.log(`[runBuild] Retrying in ${wait / 1000}s...`);
+        await sleep(wait);
+      } else {
+        throw err;
+      }
+    }
+  }
+}
+
 async function run() {
   const [,, jobId, queryB64] = process.argv;
 
@@ -47,80 +76,93 @@ async function run() {
   console.log(`[runBuild] Starting build. jobId=${jobId} query="${userQuery}"`);
 
   const supabase = getSupabase();
+  const category = inferCategory(userQuery);
+  const slug = queryToSlug(userQuery);
 
+  const trend = { keyword: userQuery, category, risingPercent: 0, score: 0, slug };
+
+  // ── Phase 1: Landing page → mark job ready ──────────────────────────────
+  let landingCopy;
   try {
-    const category = inferCategory(userQuery);
-    const slug = queryToSlug(userQuery);
-
-    const trend = {
-      keyword: userQuery,
-      category,
-      risingPercent: 0,
-      score: 0,
-      slug,
-    };
-
-    console.log(`[runBuild] Running landingAgent + productAgent in parallel...`);
-    const [landingCopy, productResult] = await Promise.all([
-      generateLanding(trend),
-      generateProduct(trend),
-    ]);
-
-    let stripeUrl = '';
-    if (process.env.STRIPE_SECRET_KEY) {
-      console.log(`[runBuild] Creating Stripe payment link...`);
-      stripeUrl = await createPaymentLink(trend);
-    } else {
-      console.log(`[runBuild] Stripe key not set — skipping payment link.`);
-    }
-
-    const { data: row, error: searchErr } = await supabase
-      .from('products')
-      .select('search_queries')
-      .eq('slug', slug)
-      .single();
-
-    const existingQueries = (!searchErr && Array.isArray(row?.search_queries)) ? row.search_queries : [];
-    if (!existingQueries.includes(userQuery)) existingQueries.push(userQuery);
-
-    const { error: upsertErr } = await supabase
-      .from('products')
-      .upsert({
-        slug,
-        keyword: userQuery,
-        category,
-        score: 0,
-        headline: landingCopy.headline,
-        subheadline: landingCopy.subheadline,
-        pain_points: landingCopy.painPoints,
-        benefits: landingCopy.benefits,
-        trust_signals: landingCopy.trustSignals,
-        landing_html: landingCopy.html,
-        product_title: productResult.title,
-        product_html: productResult.html,
-        stripe_url: stripeUrl,
-        evergreen: true,
-        content_type: 'on_demand',
-        search_queries: existingQueries,
-        times_found_in_search: 1,
-      }, { onConflict: 'slug' });
-
-    if (upsertErr) throw new Error(`Supabase upsert failed: ${upsertErr.message}`);
-
-    await supabase
-      .from('build_jobs')
-      .update({ status: 'ready', product_slug: slug, completed_at: new Date().toISOString() })
-      .eq('id', jobId);
-
-    console.log(`[runBuild] Build complete. slug="${slug}"`);
-    process.exit(0);
+    console.log(`[runBuild] Phase 1: generating landing page...`);
+    landingCopy = await generateLanding(trend);
+    console.log(`[runBuild] Landing page ready. Headline: "${landingCopy.headline}"`);
   } catch (err) {
-    console.error(`[runBuild] Build failed: ${err.constructor?.name} — ${err.message}`);
-    if (err.status) console.error(`[runBuild] HTTP status: ${err.status}`);
-    if (err.cause) console.error(`[runBuild] Cause: ${err.cause}`);
+    console.error(`[runBuild] Phase 1 failed: ${err.message}`);
     await supabase.from('build_jobs').update({ status: 'failed' }).eq('id', jobId);
     process.exit(1);
   }
+
+  // Fetch existing search_queries
+  const { data: existing } = await supabase
+    .from('products')
+    .select('search_queries')
+    .eq('slug', slug)
+    .single();
+
+  const queries = Array.isArray(existing?.search_queries) ? existing.search_queries : [];
+  if (!queries.includes(userQuery)) queries.push(userQuery);
+
+  // Save with landing data + stub product — enough for the card to appear
+  await supabase.from('products').upsert({
+    slug,
+    keyword: userQuery,
+    category,
+    score: 0,
+    headline: landingCopy.headline,
+    subheadline: landingCopy.subheadline,
+    pain_points: landingCopy.painPoints,
+    benefits: landingCopy.benefits,
+    trust_signals: landingCopy.trustSignals,
+    landing_html: landingCopy.html,
+    product_title: `${userQuery} — Complete Guide`,
+    product_html: '<p>Your guide is being prepared and will be available shortly after purchase.</p>',
+    stripe_url: '',
+    evergreen: true,
+    content_type: 'on_demand',
+    search_queries: queries,
+    times_found_in_search: 1,
+  }, { onConflict: 'slug' });
+
+  // Mark job as landing_ready — product saved but guide still generating
+  await supabase.from('build_jobs')
+    .update({ status: 'landing_ready', product_slug: slug })
+    .eq('id', jobId);
+
+  console.log(`[runBuild] Phase 1 complete. Landing saved. slug="${slug}"`);
+
+  // ── Phase 2: Product guide + Stripe (background, non-blocking) ──────────
+  console.log(`[runBuild] Phase 2: generating product guide (background)...`);
+  try {
+    const productResult = await generateProductWithRetry(trend);
+
+    let stripeUrl = '';
+    if (process.env.STRIPE_SECRET_KEY) {
+      stripeUrl = await createPaymentLink(trend);
+    }
+
+    await supabase.from('products').update({
+      product_title: productResult.title,
+      product_html: productResult.html,
+      stripe_url: stripeUrl,
+    }).eq('slug', slug);
+
+    // Mark fully ready only after Phase 2 succeeds
+    await supabase.from('build_jobs')
+      .update({ status: 'ready', completed_at: new Date().toISOString() })
+      .eq('id', jobId);
+
+    console.log(`[runBuild] Phase 2 complete. Product guide saved for slug="${slug}"`);
+  } catch (err) {
+    // Phase 2 failed — still mark ready so the UI doesn't spin forever
+    console.error(`[runBuild] Phase 2 failed after retries: ${err.message}`);
+    await supabase.from('build_jobs')
+      .update({ status: 'ready', completed_at: new Date().toISOString() })
+      .eq('id', jobId);
+    console.error(`[runBuild] Marked ready anyway — landing page for "${slug}" is live.`);
+  }
+
+  process.exit(0);
 }
 
 run();

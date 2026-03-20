@@ -33,7 +33,7 @@ async function saveToSupabase(trend, landingCopy, productResult, stripeUrl) {
       product_title: productResult.title,
       product_html: productResult.html,
       stripe_url: stripeUrl,
-      // Hayden Library fields
+      // Hidden Library fields
       evergreen: true,
       content_type: 'longtail',
     }, { onConflict: 'slug' })

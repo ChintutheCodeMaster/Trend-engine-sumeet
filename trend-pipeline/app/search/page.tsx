@@ -80,23 +80,16 @@ export default function SearchPage() {
 
         if (data.status === 'ready' && data.productSlug) {
           clearTimers();
-          // Fetch the product details
-          const prodRes = await fetch(`/api/products`);
-          const prodData = await prodRes.json();
-          const found = prodData.products?.find((p: FoundProduct) => p.slug === data.productSlug);
-          if (found) {
-            setProduct({ ...found, landingUrl: `/products/${found.slug}` } as FoundProduct);
-          } else {
-            // Fallback: construct minimal product from slug
-            setProduct({
-              slug: data.productSlug,
-              keyword: data.productSlug.replace(/-/g, ' '),
-              headline: 'Document found',
-              subheadline: '',
-              stripe_url: '',
-              category: 'money',
-            });
-          }
+          // Use product data returned directly from status endpoint
+          const p = data.product;
+          setProduct(p ?? {
+            slug: data.productSlug,
+            keyword: data.productSlug.replace(/-/g, ' '),
+            headline: 'Document found',
+            subheadline: '',
+            stripe_url: '',
+            category: 'money',
+          });
           setProgress(100);
           setPhase('done');
         } else if (data.status === 'failed') {
@@ -157,7 +150,7 @@ export default function SearchPage() {
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: 48 }}>
         <a href="/" style={{ color: '#555', fontSize: '0.85rem', textDecoration: 'none', display: 'block', marginBottom: 24 }}>
-          ← Hayden Library
+          ← Hidden Library
         </a>
         <h1 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 12 }}>
           Find your answer
