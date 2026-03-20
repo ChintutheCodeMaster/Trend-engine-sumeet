@@ -1,8 +1,12 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Trend Pipeline',
-  description: 'AI-generated digital product guides',
+  title: 'Hidden Library — Specific answers to specific questions',
+  description: 'Deep-dive guides on money, business, career, productivity, and financial health. Ask a specific question, get a complete document.',
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
