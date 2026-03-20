@@ -5,10 +5,8 @@
  * Usage: node scripts/runBuild.js <jobId> <base64EncodedQuery>
  *
  * Two-phase build:
- *   Phase 1 — landingAgent only → save product → mark job 'ready'  (~45s)
- *   Phase 2 — productAgent with retry → update product when done    (~3-5 min)
- *
- * The search UI unblocks after Phase 1. Phase 2 completes silently in the background.
+ *   Phase 1 — landingAgent only → save product → mark job 'landing_ready' (~45s)
+ *   Phase 2 — productAgent (parallel chapters ~30s) → PDF → Supabase Storage → mark 'ready'
  */
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 
@@ -16,6 +14,7 @@ const { createClient } = require('@supabase/supabase-js');
 const { generateLanding } = require('../agents/landingAgent');
 const { generateProduct } = require('../agents/productAgent');
 const { createPaymentLink } = require('../agents/stripeAgent');
+const puppeteer = require('puppeteer');
 
 function getSupabase() {
   return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
@@ -43,6 +42,43 @@ function queryToSlug(query) {
 
 function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
+}
+
+async function generatePDF(html) {
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+  });
+  try {
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+    const pdf = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: { top: '20mm', bottom: '20mm', left: '15mm', right: '15mm' },
+    });
+    return pdf;
+  } finally {
+    await browser.close();
+  }
+}
+
+async function uploadPDF(supabase, slug, pdfBuffer) {
+  const filePath = `${slug}.pdf`;
+  const { error } = await supabase.storage
+    .from('pdfs')
+    .upload(filePath, pdfBuffer, {
+      contentType: 'application/pdf',
+      upsert: true,
+    });
+
+  if (error) throw new Error(`PDF upload failed: ${error.message}`);
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('pdfs')
+    .getPublicUrl(filePath);
+
+  return publicUrl;
 }
 
 // Retries productAgent up to maxAttempts times with backoff
@@ -131,10 +167,21 @@ async function run() {
 
   console.log(`[runBuild] Phase 1 complete. Landing saved. slug="${slug}"`);
 
-  // ── Phase 2: Product guide + Stripe (background, non-blocking) ──────────
-  console.log(`[runBuild] Phase 2: generating product guide (background)...`);
+  // ── Phase 2: Product guide + PDF + Stripe (background, non-blocking) ───────
+  console.log(`[runBuild] Phase 2: generating product guide in parallel...`);
   try {
     const productResult = await generateProductWithRetry(trend);
+    console.log(`[runBuild] Product guide generated. Generating PDF...`);
+
+    // Generate PDF from the HTML
+    let pdfUrl = '';
+    try {
+      const pdfBuffer = await generatePDF(productResult.html);
+      pdfUrl = await uploadPDF(supabase, slug, pdfBuffer);
+      console.log(`[runBuild] PDF uploaded. url="${pdfUrl}"`);
+    } catch (pdfErr) {
+      console.error(`[runBuild] PDF generation/upload failed (non-fatal): ${pdfErr.message}`);
+    }
 
     let stripeUrl = '';
     if (process.env.STRIPE_SECRET_KEY) {
@@ -145,16 +192,15 @@ async function run() {
       product_title: productResult.title,
       product_html: productResult.html,
       stripe_url: stripeUrl,
+      pdf_url: pdfUrl || null,
     }).eq('slug', slug);
 
-    // Mark fully ready only after Phase 2 succeeds
     await supabase.from('build_jobs')
       .update({ status: 'ready', completed_at: new Date().toISOString() })
       .eq('id', jobId);
 
-    console.log(`[runBuild] Phase 2 complete. Product guide saved for slug="${slug}"`);
+    console.log(`[runBuild] Phase 2 complete. slug="${slug}"`);
   } catch (err) {
-    // Phase 2 failed — still mark ready so the UI doesn't spin forever
     console.error(`[runBuild] Phase 2 failed after retries: ${err.message}`);
     await supabase.from('build_jobs')
       .update({ status: 'ready', completed_at: new Date().toISOString() })

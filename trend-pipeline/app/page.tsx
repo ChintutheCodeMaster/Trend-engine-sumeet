@@ -62,7 +62,7 @@ function BookCover({ book, offset }: { book: Book; offset: number }) {
       transform: `translateX(${tx}px) scale(${scale}) rotateY(${ry}deg)`,
       opacity,
       zIndex,
-      transition: 'all 0.45s cubic-bezier(0.25,0.46,0.45,0.94)',
+      transition: 'transform 0.35s cubic-bezier(0.34,1.1,0.64,1), opacity 0.3s ease, box-shadow 0.3s ease',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
@@ -164,7 +164,7 @@ function BookCarousel() {
       return;
     }
     scrollCooldown.current = true;
-    setTimeout(() => { scrollCooldown.current = false; }, 500);
+    setTimeout(() => { scrollCooldown.current = false; }, 380);
   }, []);
 
   function handleTouchStart(e: React.TouchEvent) {
