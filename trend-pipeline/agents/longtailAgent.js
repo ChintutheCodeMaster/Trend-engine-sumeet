@@ -6,7 +6,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 async function findLongtailQuestions() {
   console.log('[longtailAgent] Generating evergreen long-tail questions...');
 
-  const prompt = `You are a content strategist building a premium digital library called Hayden Library in the money and business niche.
+  const prompt = `You are a content strategist building a premium digital library called Hidden Library in the money and business niche.
 
 Generate exactly 5 evergreen long-tail questions that real people are actively searching for right now.
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 const CATEGORIES = [
@@ -126,7 +126,7 @@ function BookCover({ book, offset }: { book: Book; offset: number }) {
         justifyContent: 'space-between',
       }}>
         <span style={{ color: book.accent, fontSize: '9px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase' }}>
-          Hayden Library
+          Hidden Library
         </span>
         <span style={{
           background: 'rgba(255,255,255,0.1)',
@@ -146,9 +146,36 @@ function BookCover({ book, offset }: { book: Book; offset: number }) {
 function BookCarousel() {
   const [index, setIndex] = useState(0);
   const total = BOOKS.length;
+  const scrollCooldown = useRef(false);
+  const touchStartX = useRef(0);
 
   function prev() { setIndex(i => (i - 1 + total) % total); }
   function next() { setIndex(i => (i + 1) % total); }
+
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault();
+    if (scrollCooldown.current) return;
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (delta > 15) {
+      next();
+    } else if (delta < -15) {
+      prev();
+    } else {
+      return;
+    }
+    scrollCooldown.current = true;
+    setTimeout(() => { scrollCooldown.current = false; }, 500);
+  }, []);
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    const dx = touchStartX.current - e.changedTouches[0].clientX;
+    if (dx > 40) next();
+    else if (dx < -40) prev();
+  }
 
   const visible = [-2, -1, 0, 1, 2].map(offset => {
     const bookIndex = (index + offset + total) % total;
@@ -173,57 +200,18 @@ function BookCarousel() {
       }} />
 
       {/* Carousel stage */}
-      <div style={{ position: 'relative', height: 360, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* Left arrow */}
-        <button
-          onClick={prev}
-          aria-label="Previous"
-          style={{
-            position: 'absolute', left: 0, zIndex: 30,
-            width: 52, height: 52, borderRadius: '50%',
-            background: '#161616', border: '1px solid #2a2a2a',
-            color: '#fff', fontSize: '1.4rem', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transition: 'all 0.2s',
-          }}
-          onMouseEnter={e => {
-            const b = e.currentTarget as HTMLButtonElement;
-            b.style.background = '#4f46e5'; b.style.borderColor = '#4f46e5';
-          }}
-          onMouseLeave={e => {
-            const b = e.currentTarget as HTMLButtonElement;
-            b.style.background = '#161616'; b.style.borderColor = '#2a2a2a';
-          }}
-        >‹</button>
-
+      <div
+        onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        style={{ position: 'relative', height: 360, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'grab' }}
+      >
         {/* Books */}
         <div style={{ position: 'relative', width: 210, height: 300 }}>
           {visible.map(({ book, offset }) => (
             <BookCover key={`${index}-${offset}`} book={book} offset={offset} />
           ))}
         </div>
-
-        {/* Right arrow */}
-        <button
-          onClick={next}
-          aria-label="Next"
-          style={{
-            position: 'absolute', right: 0, zIndex: 30,
-            width: 52, height: 52, borderRadius: '50%',
-            background: '#161616', border: '1px solid #2a2a2a',
-            color: '#fff', fontSize: '1.4rem', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transition: 'all 0.2s',
-          }}
-          onMouseEnter={e => {
-            const b = e.currentTarget as HTMLButtonElement;
-            b.style.background = '#4f46e5'; b.style.borderColor = '#4f46e5';
-          }}
-          onMouseLeave={e => {
-            const b = e.currentTarget as HTMLButtonElement;
-            b.style.background = '#161616'; b.style.borderColor = '#2a2a2a';
-          }}
-        >›</button>
       </div>
 
       {/* Current book info */}
@@ -315,7 +303,7 @@ export default function Home() {
             letterSpacing: '3px', textTransform: 'uppercase',
             padding: '5px 16px', borderRadius: 100, marginBottom: 20,
           }}>
-            Hayden Library · {BOOKS.length} documents
+            Hidden Library · {BOOKS.length} documents
           </div>
 
           <h1 style={{
