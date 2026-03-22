@@ -4,8 +4,8 @@ export const metadata: Metadata = {
   title: 'Hidden Library — Specific answers to specific questions',
   description: 'Deep-dive guides on money, business, career, productivity, and financial health. Ask a specific question, get a complete document.',
   icons: {
-    icon: '/icon.png',
-    apple: '/icon.png',
+    icon: '/icon.ico',
+    apple: '/icon.ico',
   },
 };
 

@@ -303,7 +303,7 @@ export default function Home() {
             letterSpacing: '3px', textTransform: 'uppercase',
             padding: '5px 16px', borderRadius: 100, marginBottom: 20,
           }}>
-            Hidden Library · {BOOKS.length} documents
+            Hidden Library
           </div>
 
           <h1 style={{
@@ -311,7 +311,7 @@ export default function Home() {
             fontWeight: 900, letterSpacing: '-0.04em',
             lineHeight: 1.08, marginBottom: 20,
           }}>
-            Specific answers to<br />specific questions.
+            The knowledge they never<br />taught you. Found here.
           </h1>
 
           {/* Search */}
