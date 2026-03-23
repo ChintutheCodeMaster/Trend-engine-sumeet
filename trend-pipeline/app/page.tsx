@@ -311,7 +311,7 @@ export default function Home() {
             fontWeight: 900, letterSpacing: '-0.04em',
             lineHeight: 1.08, marginBottom: 20,
           }}>
-            The knowledge they never<br />taught you. Found here.
+            The knowledge they never taught you.<br />Found here.
           </h1>
 
           {/* Search */}
