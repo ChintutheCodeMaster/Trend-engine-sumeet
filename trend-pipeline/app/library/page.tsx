@@ -1,7 +1,9 @@
+'use client';
+
 import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-export const dynamic = 'force-dynamic';
 
 function getSupabase() {
   return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
@@ -15,22 +17,17 @@ const SEGMENTS = [
   { slug: 'financial-health', label: 'Financial Health',       emoji: '🛡️', description: 'Debt, savings, budgets, credit' },
 ];
 
-async function getCategoryCounts(): Promise<Record<string, number>> {
-  const supabase = getSupabase();
-  const { data } = await supabase
-    .from('products')
-    .select('category')
-    .eq('evergreen', true);
+export default function LibraryPage() {
+  const [counts, setCounts] = useState<Record<string, number>>({});
 
-  const counts: Record<string, number> = {};
-  (data ?? []).forEach(row => {
-    counts[row.category] = (counts[row.category] ?? 0) + 1;
-  });
-  return counts;
-}
-
-export default async function LibraryPage() {
-  const counts = await getCategoryCounts();
+  useEffect(() => {
+    const supabase = getSupabase();
+    supabase.from('products').select('category').eq('evergreen', true).then(({ data }) => {
+      const c: Record<string, number> = {};
+      (data ?? []).forEach((row: { category: string }) => { c[row.category] = (c[row.category] ?? 0) + 1; });
+      setCounts(c);
+    });
+  }, []);
 
   return (
     <main style={{
