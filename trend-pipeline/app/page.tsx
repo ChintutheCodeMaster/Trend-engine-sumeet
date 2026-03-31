@@ -367,7 +367,7 @@ export default function Home() {
                   transition: 'background 0.2s', whiteSpace: 'nowrap',
                 }}
               >
-                Search
+                Search!
               </button>
             </div>
           </form>
