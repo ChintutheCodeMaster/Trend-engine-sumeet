@@ -18,19 +18,20 @@ type Book = {
   bg: string;
   accent: string;
   pattern: string;
+  image?: string;
 };
 
 const BOOKS: Book[] = [
-  { title: 'How to Pay Yourself from an LLC Without Double Taxation',     category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#1e3a6e,#1d4ed8)', accent: '#60a5fa', pattern: '◈' },
-  { title: "The Freelancer's Complete Tax Playbook",                       category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#134e4a,#0f766e)', accent: '#2dd4bf', pattern: '◇' },
-  { title: 'Negotiating Your Salary: A Step-by-Step System',              category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#7c2d12,#c2410c)', accent: '#fb923c', pattern: '△' },
-  { title: 'Getting Out of Credit Card Debt in 18 Months',               category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#14532d,#16a34a)', accent: '#86efac', pattern: '○' },
-  { title: 'Building a 6-Figure Consulting Business',                     category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#4c1d95,#7c3aed)', accent: '#c4b5fd', pattern: '✦' },
-  { title: 'Deep Work System for Remote Workers',                         category: 'productivity',     label: 'Productivity',     bg: 'linear-gradient(145deg,#1e1b4b,#4f46e5)', accent: '#a5b4fc', pattern: '▣' },
-  { title: 'S-Corp vs LLC: Which Structure Saves More Tax',               category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#7f1d1d,#b91c1c)', accent: '#fca5a5', pattern: '◉' },
-  { title: 'Emergency Fund Blueprint: 6 Months in 12 Steps',             category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#064e3b,#047857)', accent: '#6ee7b7', pattern: '◐' },
-  { title: 'How to Raise Your Freelance Rates Without Losing Clients',   category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#78350f,#b45309)', accent: '#fcd34d', pattern: '◆' },
-  { title: 'The LinkedIn Outbound System That Actually Works',            category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#0c4a6e,#0369a1)', accent: '#7dd3fc', pattern: '◈' },
+  { title: 'How to Pay Yourself from an LLC Without Double Taxation',     category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#1e3a6e,#1d4ed8)', accent: '#60a5fa', pattern: '◈', image: '/thumbnails/1.png' },
+  { title: "The Freelancer's Complete Tax Playbook",                       category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#134e4a,#0f766e)', accent: '#2dd4bf', pattern: '◇', image: '/thumbnails/2.png' },
+  { title: 'Negotiating Your Salary: A Step-by-Step System',              category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#7c2d12,#c2410c)', accent: '#fb923c', pattern: '△', image: '/thumbnails/3.png' },
+  { title: 'Getting Out of Credit Card Debt in 18 Months',               category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#14532d,#16a34a)', accent: '#86efac', pattern: '○', image: '/thumbnails/4.png' },
+  { title: 'Building a 6-Figure Consulting Business',                     category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#4c1d95,#7c3aed)', accent: '#c4b5fd', pattern: '✦', image: '/thumbnails/5.png' },
+  { title: 'Deep Work System for Remote Workers',                         category: 'productivity',     label: 'Productivity',     bg: 'linear-gradient(145deg,#1e1b4b,#4f46e5)', accent: '#a5b4fc', pattern: '▣', image: '/thumbnails/6.png' },
+  { title: 'S-Corp vs LLC: Which Structure Saves More Tax',               category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#7f1d1d,#b91c1c)', accent: '#fca5a5', pattern: '◉', image: '/thumbnails/7.png' },
+  { title: 'Emergency Fund Blueprint: 6 Months in 12 Steps',             category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#064e3b,#047857)', accent: '#6ee7b7', pattern: '◐', image: '/thumbnails/8.png' },
+  { title: 'How to Raise Your Freelance Rates Without Losing Clients',   category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#78350f,#b45309)', accent: '#fcd34d', pattern: '◆', image: '/thumbnails/9.png' },
+  { title: 'The LinkedIn Outbound System That Actually Works',            category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#0c4a6e,#0369a1)', accent: '#7dd3fc', pattern: '◈', image: '/thumbnails/10.png' },
   { title: 'Invoice & Cash Flow for Solo Founders',                       category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#172554,#1e40af)', accent: '#93c5fd', pattern: '▲' },
   { title: 'ADHD Productivity: A System Built for Your Brain',           category: 'productivity',     label: 'Productivity',     bg: 'linear-gradient(145deg,#4a044e,#7e22ce)', accent: '#e879f9', pattern: '◎' },
   { title: 'Buying Your First Investment Property With Little Capital',  category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#022c22,#065f46)', accent: '#34d399', pattern: '✧' },
@@ -48,6 +49,27 @@ function BookCover({ book, offset }: { book: Book; offset: number }) {
   const ry = -offset * 14;
   const opacity = abs === 0 ? 1 : abs === 1 ? 0.82 : 0.55;
   const zIndex = 20 - abs * 5;
+
+  if (book.image) {
+    return (
+      <div style={{
+        position: 'absolute',
+        width: 210,
+        height: 300,
+        borderRadius: 8,
+        overflow: 'hidden',
+        boxShadow: offset === 0
+          ? '0 32px 80px rgba(0,0,0,0.8), 6px 0 0 rgba(0,0,0,0.5) inset'
+          : '0 16px 40px rgba(0,0,0,0.5)',
+        transform: `translateX(${tx}px) scale(${scale}) rotateY(${ry}deg)`,
+        opacity,
+        zIndex,
+        transition: 'transform 0.35s cubic-bezier(0.34,1.1,0.64,1), opacity 0.3s ease, box-shadow 0.3s ease',
+      }}>
+        <img src={book.image} alt={book.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      </div>
+    );
+  }
 
   return (
     <div style={{
