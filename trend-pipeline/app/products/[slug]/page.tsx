@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 import type { Metadata } from 'next';
+import DownloadModal from './DownloadModal';
 
 function getSupabase() {
   return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
@@ -36,7 +37,7 @@ function extractBody(fullHtml: string): string {
 export default async function ProductPage({ params }: { params: { slug: string } }) {
   const { data, error } = await getSupabase()
     .from('products')
-    .select('landing_html, headline, keyword, category')
+    .select('landing_html, headline, subheadline, keyword, category')
     .eq('slug', params.slug)
     .single();
 
@@ -60,7 +61,18 @@ export default async function ProductPage({ params }: { params: { slug: string }
       {/* Tailwind Play CDN — must load before the body HTML runs */}
       {/* eslint-disable-next-line @next/next/no-sync-scripts */}
       <script src="https://cdn.tailwindcss.com" />
-      <div dangerouslySetInnerHTML={{ __html: bodyContent }} />
+
+      <DownloadModal
+        slug={params.slug}
+        headline={data.headline}
+        subheadline={data.subheadline}
+        category={data.category}
+      />
+
+      {/* Extra bottom padding so content isn't hidden behind the bar */}
+      <div style={{ paddingBottom: 72 }}>
+        <div dangerouslySetInnerHTML={{ __html: bodyContent }} />
+      </div>
     </>
   );
 }
