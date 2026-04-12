@@ -5,9 +5,11 @@ const { generateLanding } = require('./agents/landingAgent');
 const { generateProduct } = require('./agents/productAgent');
 const { createPaymentLink } = require('./agents/stripeAgent');
 const { runOptimization } = require('./agents/optimizationAgent');
+const { buildAndStorePdf } = require('./lib/generatePdf');
 
 function getSupabase() {
-  return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+  return createClient(process.env.SUPABASE_URL, key);
 }
 
 async function saveToSupabase(trend, landingCopy, productResult, stripeUrl) {
@@ -63,6 +65,15 @@ async function processTrend(trend) {
     console.log(`[orchestrator]   Stripe key not set — skipping payment link.`);
   }
   const slug = await saveToSupabase(trend, landingCopy, productResult, stripeUrl);
+
+  // Generate and store PDF
+  try {
+    console.log(`[orchestrator]   Generating PDF for "${slug}"...`);
+    await buildAndStorePdf(slug);
+    console.log(`[orchestrator]   PDF stored.`);
+  } catch (pdfErr) {
+    console.error(`[orchestrator]   PDF generation failed: ${pdfErr.message}`);
+  }
 
   return {
     keyword: trend.keyword,

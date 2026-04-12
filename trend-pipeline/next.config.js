@@ -2,7 +2,7 @@
 const nextConfig = {
   experimental: {
     // These packages use Node.js built-ins and must run only on the server.
-    serverComponentsExternalPackages: ['google-trends-api', '@anthropic-ai/sdk', 'stripe'],
+    serverComponentsExternalPackages: ['google-trends-api', '@anthropic-ai/sdk', 'stripe', 'puppeteer', 'puppeteer-core', '@sparticuz/chromium'],
   },
 };
 
