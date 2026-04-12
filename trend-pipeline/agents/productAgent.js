@@ -76,7 +76,7 @@ This chapter covers: ${spec.focus}
 Return ONLY valid JSON, no markdown, no code fences:
 {
   "introduction": "2-3 sentences on what this chapter covers and why it comes first.",
-  "content": "600-800 words of genuine expert-level content. Write as a practitioner who has done this — real names, real numbers, real examples. Paragraphs separated by \\n\\n. Absolutely no generic filler.",
+  "content": "200-250 words of genuine expert-level content. Write as a practitioner who has done this — real names, real numbers, real examples. Paragraphs separated by \\n\\n. Absolutely no generic filler. Be concise and dense — every sentence must earn its place.",
   "keyTakeaways": ["Specific takeaway 1", "Specific takeaway 2", "Specific takeaway 3"],
   "template": "A short practical template, checklist, or worksheet relevant to this chapter (3-5 lines)"
 }`;
@@ -178,11 +178,19 @@ function buildProductHTML(product) {
       --chapter-bg: #ffffff;
     }
 
+    @page {
+      size: A4;
+      margin: 32px 48px 48px 48px;
+    }
+
     @media print {
-      body { font-size: 11pt; }
+      body { font-size: 10.5pt; max-width: 100%; padding: 0; }
       .no-print { display: none; }
-      .chapter { page-break-inside: avoid; }
+      .cover { page-break-after: always; }
+      .toc { page-break-after: always; }
+      .chapter { page-break-inside: avoid; page-break-before: auto; }
       .chapter-header { page-break-after: avoid; }
+      .action-steps-section { page-break-before: always; }
     }
 
     body {

@@ -1,10 +1,9 @@
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
-const { spawn } = require('child_process');
-const path = require('path');
 
 function getSupabase() {
-  return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+  return createClient(process.env.SUPABASE_URL, key);
 }
 
 // Search existing evergreen products using ilike on keyword and headline
@@ -43,6 +42,22 @@ async function incrementSearchCount(productId, query) {
 
 async function createBuildJob(query) {
   const supabase = getSupabase();
+
+  // Return the existing job if one is already in progress for this query
+  const { data: existing } = await supabase
+    .from('build_jobs')
+    .select('id')
+    .eq('query', query)
+    .in('status', ['building', 'landing_ready'])
+    .order('started_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (existing) {
+    console.log(`[searchAgent] Reusing existing build job ${existing.id} for query "${query}"`);
+    return existing.id;
+  }
+
   const { data, error } = await supabase
     .from('build_jobs')
     .insert({ query, status: 'building' })
@@ -52,26 +67,21 @@ async function createBuildJob(query) {
   return data.id;
 }
 
-// Spawns a detached child process so the build runs completely outside
-// Next.js — no fetch patching, no hot-reload interference, no request timeouts.
+// Fires a request to the /api/build route (no child process needed).
+// Works both locally and on Vercel.
 function triggerBackgroundBuild(jobId, userQuery) {
-  const scriptPath = path.join(process.cwd(), 'scripts/runBuild.js');
-  const queryB64 = Buffer.from(userQuery).toString('base64');
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  const url = `${baseUrl}/api/build/${jobId}`;
 
-  console.log(`[searchAgent] Spawning build process. jobId=${jobId}`);
+  console.log(`[searchAgent] Triggering build via API. jobId=${jobId}`);
 
-  const child = spawn(process.execPath, [scriptPath, jobId, queryB64], {
-    detached: true,
-    stdio: 'inherit', // pipe logs to the parent terminal
-    env: process.env,
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: userQuery }),
+  }).catch(err => {
+    console.error(`[searchAgent] Failed to trigger build API: ${err.message}`);
   });
-
-  child.on('error', err => {
-    console.error(`[searchAgent] Failed to spawn build process: ${err.message}`);
-  });
-
-  // Detach so the child outlives this process if needed
-  child.unref();
 }
 
 // ── Public API ──────────────────────────────────────────────────────────────

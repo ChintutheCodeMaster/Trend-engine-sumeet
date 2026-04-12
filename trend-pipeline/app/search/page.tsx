@@ -77,6 +77,7 @@ export default function SearchPage() {
       try {
         const res = await fetch(`/api/search/status/${jobId}`);
         const data = await res.json();
+        console.log('[poll]', data.status, data.productSlug);
 
         if (data.status === 'ready' && data.productSlug) {
           clearTimers();
@@ -97,8 +98,8 @@ export default function SearchPage() {
           setErrorMsg('Something went wrong. Please try a different search.');
           setPhase('error');
         }
-      } catch {
-        // keep polling
+      } catch (err) {
+        console.error('[poll] error:', err);
       }
     }, 3000);
   }
