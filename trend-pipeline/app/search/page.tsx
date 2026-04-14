@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 type FoundProduct = {
   slug: string;
@@ -30,7 +31,8 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default function SearchPage() {
-  const [query, setQuery] = useState('');
+  const searchParams = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get('q') ?? '');
   const [phase, setPhase] = useState<'idle' | 'searching' | 'building' | 'done' | 'error'>('idle');
   const [msgIndex, setMsgIndex] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -48,6 +50,12 @@ export default function SearchPage() {
   }
 
   useEffect(() => () => clearTimers(), []);
+
+  // Auto-submit if a query came in via URL param (e.g. from the home page search)
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q?.trim()) runSearch(q.trim());
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function startBuildAnimation(jobId: string) {
     setPhase('building');
@@ -104,9 +112,8 @@ export default function SearchPage() {
     }, 3000);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!query.trim() || phase === 'searching' || phase === 'building') return;
+  async function runSearch(q: string) {
+    if (!q.trim() || phase === 'searching' || phase === 'building') return;
 
     clearTimers();
     setProduct(null);
@@ -117,7 +124,7 @@ export default function SearchPage() {
       const res = await fetch('/api/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: query.trim() }),
+        body: JSON.stringify({ query: q.trim() }),
       });
 
       const data: SearchResult = await res.json();
@@ -132,6 +139,11 @@ export default function SearchPage() {
       setErrorMsg('Failed to reach the server. Please try again.');
       setPhase('error');
     }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    runSearch(query);
   }
 
   const currentMsg = BUILD_MESSAGES[msgIndex];
