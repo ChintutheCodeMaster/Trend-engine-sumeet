@@ -170,8 +170,10 @@ export async function POST(
 
   if (!userQuery) return NextResponse.json({ error: 'Missing query' }, { status: 400 });
 
-  // Run build in background — don't await so response returns immediately
-  runBuild(jobId, userQuery).catch(err =>
+  // Await runBuild so Vercel keeps the function alive until the build completes.
+  // On Vercel, anything not awaited before the response is sent gets killed.
+  // maxDuration = 300 gives us up to 5 minutes.
+  await runBuild(jobId, userQuery).catch(err =>
     console.error(`[build] Unhandled error for jobId=${jobId}: ${err.message}`)
   );
 
