@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 type FoundProduct = {
@@ -31,6 +31,14 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default function SearchPage() {
+  return (
+    <Suspense>
+      <SearchContent />
+    </Suspense>
+  );
+}
+
+function SearchContent() {
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') ?? '');
   const [phase, setPhase] = useState<'idle' | 'searching' | 'building' | 'done' | 'error'>('idle');
