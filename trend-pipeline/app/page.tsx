@@ -335,23 +335,32 @@ export default function Home() {
 
         {/* Badge + headline + search — compact at top */}
         <div style={{ textAlign: 'center', marginBottom: 52, position: 'relative', zIndex: 1 }}>
-          <div style={{
-            display: 'inline-block',
-            background: '#4f46e510', border: '1px solid #4f46e530',
-            color: '#818cf8', fontSize: '11px', fontWeight: 700,
-            letterSpacing: '3px', textTransform: 'uppercase',
-            padding: '5px 16px', borderRadius: 100, marginBottom: 20,
-          }}>
-            Hidden Library
-          </div>
-
           <h1 style={{
             fontSize: 'clamp(2.2rem, 6vw, 3.8rem)',
             fontWeight: 900, letterSpacing: '-0.04em',
-            lineHeight: 1.08, marginBottom: 20,
+            lineHeight: 1.08, marginBottom: 16,
           }}>
-            Beyond the Classroom: Essential Knowledge Never Covered
+            Hidden Library
           </h1>
+          <p style={{
+           
+            color: '#666',
+            fontSize: 'clamp(1rem, 2.5vw, 1.3rem)',
+            fontWeight: 600,
+            letterSpacing: '-0.02em',
+            marginBottom: 28,
+          }}>
+            "Where you get to know the unknown"
+          </p>
+          <p style={{
+            color: '#4a4a5a',
+            fontSize: 'clamp(0.8rem, 1.5vw, 0.95rem)',
+            fontStyle: 'italic',
+            letterSpacing: '0.02em',
+            marginBottom: 20,
+          }}>
+            Beyond the classroom — essential knowledge never covered.
+          </p>
 
           {/* Search */}
           <form onSubmit={handleSearch} style={{ width: '100%', maxWidth: 580, margin: '0 auto' }}>
@@ -532,138 +541,113 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
           border: '1px solid #222',
           borderRadius: 24,
           width: '100%',
-          maxWidth: 460,
+          maxWidth: 500,
           overflow: 'hidden',
           animation: 'bookModalIn 0.25s cubic-bezier(0.34,1.2,0.64,1)',
         }}
       >
         <style>{`@keyframes bookModalIn { from { opacity:0; transform:scale(0.93) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }`}</style>
 
-        {/* Book cover hero */}
-        <div style={{
-          background: book.bg,
-          height: 220,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '28px 36px',
-          gap: 14,
-          position: 'relative',
-          overflow: 'hidden',
-        }}>
-          {/* Spine */}
-          <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 14, background: 'rgba(0,0,0,0.35)' }} />
-          {/* Pattern watermark */}
-          <div style={{ position: 'absolute', top: -20, right: -20, fontSize: 180, opacity: 0.06, color: '#fff', lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>
-            {book.pattern}
+        {/* ── Row 1: thumbnail (left) + title/subtitle (right) ── */}
+        <div style={{ display: 'flex', height: 200, borderBottom: '1px solid #1a1a1a' }}>
+
+          {/* Left: book cover */}
+          <div style={{
+            width: '45%',
+            flexShrink: 0,
+            background: book.bg,
+            position: 'relative',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 10, background: 'rgba(0,0,0,0.4)' }} />
+            <div style={{ position: 'absolute', top: -10, right: -10, fontSize: 130, opacity: 0.07, color: '#fff', lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>
+              {book.pattern}
+            </div>
+            {book.image
+              ? <img src={book.image} alt={book.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              : (
+                <div style={{ padding: '16px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                  <p style={{ color: '#fff', fontWeight: 800, fontSize: '0.8rem', lineHeight: 1.35, margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
+                    {book.title}
+                  </p>
+                </div>
+              )
+            }
           </div>
 
-          {book.image
-            ? <img src={book.image} alt={book.title} style={{ height: 160, borderRadius: 6, boxShadow: '0 16px 48px rgba(0,0,0,0.6)', objectFit: 'cover' }} />
-            : (
-              <>
-                <div style={{
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  borderRadius: 6,
-                  padding: '6px 14px',
-                  color: book.accent,
-                  fontSize: '9px', fontWeight: 700,
-                  letterSpacing: '2.5px', textTransform: 'uppercase',
-                }}>
-                  {book.label} · Hidden Library
-                </div>
-                <p style={{
-                  color: '#fff', fontWeight: 800,
-                  fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
-                  textAlign: 'center', lineHeight: 1.3,
-                  textShadow: '0 2px 12px rgba(0,0,0,0.5)',
-                  margin: 0,
-                }}>
-                  {book.title}
-                </p>
-                <div style={{ color: book.accent, fontSize: '11px', fontWeight: 700, letterSpacing: '1px' }}>
-                  $10 · PDF Guide
-                </div>
-              </>
-            )
-          }
+          {/* Right: title + subtitle */}
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: '24px 20px',
+            gap: 10,
+            borderLeft: '1px solid #1a1a1a',
+            background: '#0d0d0d',
+          }}>
+            <div style={{ color: '#4f46e5', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase' }}>
+              {book.label} · Hidden Library
+            </div>
+            <p style={{ color: '#fff', fontSize: '1rem', fontWeight: 800, lineHeight: 1.3, margin: 0 }}>
+              {book.title}
+            </p>
+            <p style={{ color: '#555', fontSize: '0.78rem', lineHeight: 1.5, margin: 0 }}>
+              Instant PDF · Expert knowledge · Yours forever
+            </p>
+          </div>
         </div>
 
-        {/* Content */}
-        <div style={{ padding: '24px 28px 28px' }}>
-          <h2 style={{
-            color: '#fff', fontWeight: 800,
-            fontSize: '1.05rem', lineHeight: 1.35,
-            marginBottom: 10,
-          }}>
-            {book.title}
-          </h2>
-          <p style={{ color: '#777', fontSize: '0.875rem', lineHeight: 1.7, marginBottom: 20 }}>
+        {/* ── Row 2: full-width description ── */}
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid #1a1a1a', background: '#0a0a0a' }}>
+          <p style={{ color: '#666', fontSize: '0.875rem', lineHeight: 1.7, margin: 0 }}>
             {book.desc}
           </p>
+        </div>
 
-          {/* Perks */}
-          <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
-            {['Instant PDF', '~40 pages', 'Keep forever'].map(perk => (
-              <div key={perk} style={{
-                display: 'flex', alignItems: 'center', gap: 5,
-                color: '#555', fontSize: '0.78rem',
-              }}>
-                <span style={{ color: '#4f46e5' }}>✓</span> {perk}
-              </div>
-            ))}
-          </div>
-
-          {/* Price + CTA */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div>
-              <span style={{ fontSize: '2rem', fontWeight: 900, color: '#818cf8' }}>$10</span>
-              <span style={{ color: '#444', fontSize: '0.82rem', marginLeft: 8 }}>one-time</span>
-            </div>
-            <a
-              href={`/search?q=${searchQuery}`}
-              style={{
-                background: '#4f46e5',
-                color: '#fff',
-                borderRadius: 12,
-                padding: '12px 24px',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                textDecoration: 'none',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              Get this guide →
-            </a>
-          </div>
-
-          {/* Mock download */}
-          <button disabled style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            width: '100%',
-            background: '#161616',
-            border: '1px solid #222',
-            color: '#3a3a3a',
-            borderRadius: 12,
-            padding: '11px',
-            fontSize: '0.88rem',
-            fontWeight: 600,
-            cursor: 'not-allowed',
-          }}>
-            🔒 Download PDF — purchase to unlock
-          </button>
-
-          <button
-            onClick={onClose}
+        {/* ── Row 3: two buttons ── */}
+        <div style={{ display: 'flex' }}>
+          {/* Price badge */}
+          <a
+            href={`/search?q=${searchQuery}`}
             style={{
-              display: 'block', width: '100%', marginTop: 12,
-              background: 'none', border: 'none',
-              color: '#333', fontSize: '0.82rem', cursor: 'pointer',
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '18px 16px',
+              background: '#4f46e5',
+              textDecoration: 'none',
+              gap: 2,
+              borderBottomLeftRadius: 24,
             }}
           >
-            Close
+            <span style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 900, lineHeight: 1 }}>$10</span>
+            <span style={{ color: '#a5b4fc', fontSize: '0.72rem', fontWeight: 600 }}>one-time · get guide →</span>
+          </a>
+
+          {/* Download (locked) */}
+          <button disabled style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '18px 16px',
+            background: '#0d0d0d',
+            border: 'none',
+            borderLeft: '1px solid #1a1a1a',
+            gap: 4,
+            cursor: 'not-allowed',
+            borderBottomRightRadius: 24,
+          }}>
+            <span style={{ fontSize: '1.1rem' }}>🔒</span>
+            <span style={{ color: '#333', fontSize: '0.78rem', fontWeight: 600 }}>Download PDF</span>
+            <span style={{ color: '#252525', fontSize: '0.68rem' }}>purchase to unlock</span>
           </button>
         </div>
       </div>
