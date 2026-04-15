@@ -19,60 +19,65 @@ type Book = {
   accent: string;
   pattern: string;
   image?: string;
+  desc: string;
 };
 
 const BOOKS: Book[] = [
-  { title: 'How to Pay Yourself from an LLC Without Double Taxation',     category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#1e3a6e,#1d4ed8)', accent: '#60a5fa', pattern: '◈', image: '/thumbnails/1.png' },
-  { title: "The Freelancer's Complete Tax Playbook",                       category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#134e4a,#0f766e)', accent: '#2dd4bf', pattern: '◇', image: '/thumbnails/2.png' },
-  { title: 'Negotiating Your Salary: A Step-by-Step System',              category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#7c2d12,#c2410c)', accent: '#fb923c', pattern: '△', image: '/thumbnails/3.png' },
-  { title: 'Getting Out of Credit Card Debt in 18 Months',               category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#14532d,#16a34a)', accent: '#86efac', pattern: '○', image: '/thumbnails/4.png' },
-  { title: 'Building a 6-Figure Consulting Business',                     category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#4c1d95,#7c3aed)', accent: '#c4b5fd', pattern: '✦', image: '/thumbnails/5.png' },
-  { title: 'Deep Work System for Remote Workers',                         category: 'productivity',     label: 'Productivity',     bg: 'linear-gradient(145deg,#1e1b4b,#4f46e5)', accent: '#a5b4fc', pattern: '▣', image: '/thumbnails/6.png' },
-  { title: 'S-Corp vs LLC: Which Structure Saves More Tax',               category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#7f1d1d,#b91c1c)', accent: '#fca5a5', pattern: '◉', image: '/thumbnails/7.png' },
-  { title: 'Emergency Fund Blueprint: 6 Months in 12 Steps',             category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#064e3b,#047857)', accent: '#6ee7b7', pattern: '◐', image: '/thumbnails/8.png' },
-  { title: 'How to Raise Your Freelance Rates Without Losing Clients',   category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#78350f,#b45309)', accent: '#fcd34d', pattern: '◆', image: '/thumbnails/9.png' },
-  { title: 'The LinkedIn Outbound System That Actually Works',            category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#0c4a6e,#0369a1)', accent: '#7dd3fc', pattern: '◈', image: '/thumbnails/10.png' },
-  { title: 'Invoice & Cash Flow for Solo Founders',                       category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#172554,#1e40af)', accent: '#93c5fd', pattern: '▲' },
-  { title: 'ADHD Productivity: A System Built for Your Brain',           category: 'productivity',     label: 'Productivity',     bg: 'linear-gradient(145deg,#4a044e,#7e22ce)', accent: '#e879f9', pattern: '◎' },
-  { title: 'Buying Your First Investment Property With Little Capital',  category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#022c22,#065f46)', accent: '#34d399', pattern: '✧' },
-  { title: 'Client Contracts That Actually Protect You',                 category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#2e1065,#4338ca)', accent: '#818cf8', pattern: '◇' },
-  { title: 'The 30-Day Budget Reset',                                     category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#052e16,#166534)', accent: '#4ade80', pattern: '○' },
-  { title: 'Getting Promoted Without Playing Office Politics',            category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#451a03,#92400e)', accent: '#fbbf24', pattern: '△' },
-  { title: 'Pricing Your Services for Premium Clients',                   category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#3b0764,#6d28d9)', accent: '#ddd6fe', pattern: '✦' },
-  { title: 'Building a Second Income Stream While Fully Employed',       category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#0f172a,#1e3a8a)', accent: '#bfdbfe', pattern: '▣' },
+  { title: 'How to Pay Yourself from an LLC Without Double Taxation',    category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#1e3a6e,#1d4ed8)', accent: '#60a5fa', pattern: '◈', image: '/thumbnails/1.png',  desc: 'The exact salary vs. distribution split that minimises your tax bill — with worked examples for single-member and multi-member LLCs.' },
+  { title: "The Freelancer's Complete Tax Playbook",                      category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#134e4a,#0f766e)', accent: '#2dd4bf', pattern: '◇', image: '/thumbnails/2.png',  desc: 'Quarterly estimates, deductible expenses, home-office rules, and retirement accounts — everything a self-employed person needs to stop overpaying.' },
+  { title: 'Negotiating Your Salary: A Step-by-Step System',             category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#7c2d12,#c2410c)', accent: '#fb923c', pattern: '△', image: '/thumbnails/3.png',  desc: 'Word-for-word scripts, counter-offer frameworks, and the timing tricks that get you 10–20% more without risking the offer.' },
+  { title: 'Getting Out of Credit Card Debt in 18 Months',              category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#14532d,#16a34a)', accent: '#86efac', pattern: '○', image: '/thumbnails/4.png',  desc: 'A month-by-month payoff plan with balance transfer strategy, interest negotiation calls, and a cash-flow tracker included.' },
+  { title: 'Building a 6-Figure Consulting Business',                    category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#4c1d95,#7c3aed)', accent: '#c4b5fd', pattern: '✦', image: '/thumbnails/5.png',  desc: 'How to package expertise, price for profit, land the first 5 clients, and build retainer revenue that compounds month over month.' },
+  { title: 'Deep Work System for Remote Workers',                        category: 'productivity',     label: 'Productivity',     bg: 'linear-gradient(145deg,#1e1b4b,#4f46e5)', accent: '#a5b4fc', pattern: '▣', image: '/thumbnails/6.png',  desc: 'A proven 4-block daily schedule, distraction audit, and environment design guide that doubles output without working longer hours.' },
+  { title: 'S-Corp vs LLC: Which Structure Saves More Tax',              category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#7f1d1d,#b91c1c)', accent: '#fca5a5', pattern: '◉', image: '/thumbnails/7.png',  desc: 'Side-by-side tax math at every income level, the exact S-Corp election threshold, and the paperwork checklist to switch structures.' },
+  { title: 'Emergency Fund Blueprint: 6 Months in 12 Steps',            category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#064e3b,#047857)', accent: '#6ee7b7', pattern: '◐', image: '/thumbnails/8.png',  desc: 'A step-by-step savings ladder that builds a 6-month cushion in 12 months, even on a tight budget — with high-yield account recommendations.' },
+  { title: 'How to Raise Your Freelance Rates Without Losing Clients',  category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#78350f,#b45309)', accent: '#fcd34d', pattern: '◆', image: '/thumbnails/9.png',  desc: 'The announcement email template, the timing strategy, and the value-reframe conversation that keeps 90% of clients when you raise rates.' },
+  { title: 'The LinkedIn Outbound System That Actually Works',           category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#0c4a6e,#0369a1)', accent: '#7dd3fc', pattern: '◈', image: '/thumbnails/10.png', desc: 'A repeatable 5-step outreach sequence — profile optimisation, targeting filters, connection notes, and follow-up cadence — that books calls.' },
+  { title: 'Invoice & Cash Flow for Solo Founders',                      category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#172554,#1e40af)', accent: '#93c5fd', pattern: '▲', desc: 'Net-30 vs. upfront payment terms, late-fee clauses, and a 13-week cash flow template so you always know what hits your account next.' },
+  { title: 'ADHD Productivity: A System Built for Your Brain',          category: 'productivity',     label: 'Productivity',     bg: 'linear-gradient(145deg,#4a044e,#7e22ce)', accent: '#e879f9', pattern: '◎', desc: 'Body-doubling, time-blocking, and external accountability structures designed specifically for how ADHD brains actually function.' },
+  { title: 'Buying Your First Investment Property With Little Capital', category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#022c22,#065f46)', accent: '#34d399', pattern: '✧', desc: 'House-hacking, BRRRR method, FHA loan strategy — real paths to a first rental property with under $20k out of pocket.' },
+  { title: 'Client Contracts That Actually Protect You',                category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#2e1065,#4338ca)', accent: '#818cf8', pattern: '◇', desc: 'The 9 clauses every freelance contract must have, plus ready-to-use templates for scope creep, kill fees, and IP ownership.' },
+  { title: 'The 30-Day Budget Reset',                                    category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#052e16,#166534)', accent: '#4ade80', pattern: '○', desc: 'A full spending audit, zero-based budget template, and 30-day habit tracker that rewires how you relate to money in one month.' },
+  { title: 'Getting Promoted Without Playing Office Politics',           category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#451a03,#92400e)', accent: '#fbbf24', pattern: '△', desc: 'How to build visibility, document impact, and have the promotion conversation — without schmoozing or compromising your integrity.' },
+  { title: 'Pricing Your Services for Premium Clients',                  category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#3b0764,#6d28d9)', accent: '#ddd6fe', pattern: '✦', desc: 'Value-based pricing frameworks, anchor pricing psychology, and the proposal structure that makes your rate feel like a bargain.' },
+  { title: 'Building a Second Income Stream While Fully Employed',      category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#0f172a,#1e3a8a)', accent: '#bfdbfe', pattern: '▣', desc: 'The 5 lowest-risk side income models for full-time employees, with a 90-day launch plan that fits inside evenings and weekends.' },
 ];
 
-function BookCover({ book, offset }: { book: Book; offset: number }) {
+function BookCover({ book, offset, onClick }: { book: Book; offset: number; onClick?: () => void }) {
   const abs = Math.abs(offset);
   const scale = 1 - abs * 0.12;
   const tx = offset * 240;
   const ry = -offset * 14;
   const opacity = abs === 0 ? 1 : abs === 1 ? 0.82 : 0.55;
   const zIndex = 20 - abs * 5;
+  const isCenter = offset === 0;
 
   if (book.image) {
     return (
-      <div style={{
-        position: 'absolute',
-        width: 210,
-        height: 300,
-        borderRadius: 8,
-        overflow: 'hidden',
-        boxShadow: offset === 0
-          ? '0 32px 80px rgba(0,0,0,0.8), 6px 0 0 rgba(0,0,0,0.5) inset'
-          : '0 16px 40px rgba(0,0,0,0.5)',
-        transform: `translateX(${tx}px) scale(${scale}) rotateY(${ry}deg)`,
-        opacity,
-        zIndex,
-        transition: 'transform 0.35s cubic-bezier(0.34,1.1,0.64,1), opacity 0.3s ease, box-shadow 0.3s ease',
-      }}>
+      <div
+        onClick={isCenter ? onClick : undefined}
+        style={{
+          position: 'absolute',
+          width: 210,
+          height: 300,
+          borderRadius: 8,
+          overflow: 'hidden',
+          boxShadow: offset === 0
+            ? '0 32px 80px rgba(0,0,0,0.8), 6px 0 0 rgba(0,0,0,0.5) inset'
+            : '0 16px 40px rgba(0,0,0,0.5)',
+          transform: `translateX(${tx}px) scale(${scale}) rotateY(${ry}deg)`,
+          opacity,
+          zIndex,
+          cursor: isCenter ? 'pointer' : 'default',
+          transition: 'transform 0.35s cubic-bezier(0.34,1.1,0.64,1), opacity 0.3s ease, box-shadow 0.3s ease',
+        }}>
         <img src={book.image} alt={book.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
     );
   }
 
   return (
-    <div style={{
+    <div onClick={isCenter ? onClick : undefined} style={{
       position: 'absolute',
       width: 210,
       height: 300,
@@ -84,6 +89,7 @@ function BookCover({ book, offset }: { book: Book; offset: number }) {
       transform: `translateX(${tx}px) scale(${scale}) rotateY(${ry}deg)`,
       opacity,
       zIndex,
+      cursor: isCenter ? 'pointer' : 'default',
       transition: 'transform 0.35s cubic-bezier(0.34,1.1,0.64,1), opacity 0.3s ease, box-shadow 0.3s ease',
       display: 'flex',
       flexDirection: 'column',
@@ -170,6 +176,7 @@ function BookCarousel() {
   const total = BOOKS.length;
   const scrollCooldown = useRef(false);
   const touchStartX = useRef(0);
+  const [modalBook, setModalBook] = useState<Book | null>(null);
 
   function prev() { setIndex(i => (i - 1 + total) % total); }
   function next() { setIndex(i => (i + 1) % total); }
@@ -231,7 +238,12 @@ function BookCarousel() {
         {/* Books */}
         <div style={{ position: 'relative', width: 210, height: 300 }}>
           {visible.map(({ book, offset }) => (
-            <BookCover key={`${index}-${offset}`} book={book} offset={offset} />
+            <BookCover
+              key={`${index}-${offset}`}
+              book={book}
+              offset={offset}
+              onClick={() => setModalBook(book)}
+            />
           ))}
         </div>
       </div>
@@ -256,7 +268,11 @@ function BookCarousel() {
         }}>
           {BOOKS[index].label}
         </span>
+        <p style={{ color: '#333', fontSize: '0.75rem', marginTop: 10 }}>Click the cover to preview</p>
       </div>
+
+      {/* Book modal */}
+      {modalBook && <BookModal book={modalBook} onClose={() => setModalBook(null)} />}
 
       {/* Dots */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 20 }}>
@@ -492,6 +508,166 @@ export default function Home() {
         ))}
       </footer>
     </main>
+  );
+}
+
+function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
+  const searchQuery = encodeURIComponent(book.title);
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0,
+        background: 'rgba(0,0,0,0.82)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: 10000, padding: 24,
+        backdropFilter: 'blur(4px)',
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: '#111',
+          border: '1px solid #222',
+          borderRadius: 24,
+          width: '100%',
+          maxWidth: 460,
+          overflow: 'hidden',
+          animation: 'bookModalIn 0.25s cubic-bezier(0.34,1.2,0.64,1)',
+        }}
+      >
+        <style>{`@keyframes bookModalIn { from { opacity:0; transform:scale(0.93) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }`}</style>
+
+        {/* Book cover hero */}
+        <div style={{
+          background: book.bg,
+          height: 220,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '28px 36px',
+          gap: 14,
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          {/* Spine */}
+          <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 14, background: 'rgba(0,0,0,0.35)' }} />
+          {/* Pattern watermark */}
+          <div style={{ position: 'absolute', top: -20, right: -20, fontSize: 180, opacity: 0.06, color: '#fff', lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>
+            {book.pattern}
+          </div>
+
+          {book.image
+            ? <img src={book.image} alt={book.title} style={{ height: 160, borderRadius: 6, boxShadow: '0 16px 48px rgba(0,0,0,0.6)', objectFit: 'cover' }} />
+            : (
+              <>
+                <div style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: 6,
+                  padding: '6px 14px',
+                  color: book.accent,
+                  fontSize: '9px', fontWeight: 700,
+                  letterSpacing: '2.5px', textTransform: 'uppercase',
+                }}>
+                  {book.label} · Hidden Library
+                </div>
+                <p style={{
+                  color: '#fff', fontWeight: 800,
+                  fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
+                  textAlign: 'center', lineHeight: 1.3,
+                  textShadow: '0 2px 12px rgba(0,0,0,0.5)',
+                  margin: 0,
+                }}>
+                  {book.title}
+                </p>
+                <div style={{ color: book.accent, fontSize: '11px', fontWeight: 700, letterSpacing: '1px' }}>
+                  $10 · PDF Guide
+                </div>
+              </>
+            )
+          }
+        </div>
+
+        {/* Content */}
+        <div style={{ padding: '24px 28px 28px' }}>
+          <h2 style={{
+            color: '#fff', fontWeight: 800,
+            fontSize: '1.05rem', lineHeight: 1.35,
+            marginBottom: 10,
+          }}>
+            {book.title}
+          </h2>
+          <p style={{ color: '#777', fontSize: '0.875rem', lineHeight: 1.7, marginBottom: 20 }}>
+            {book.desc}
+          </p>
+
+          {/* Perks */}
+          <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
+            {['Instant PDF', '~40 pages', 'Keep forever'].map(perk => (
+              <div key={perk} style={{
+                display: 'flex', alignItems: 'center', gap: 5,
+                color: '#555', fontSize: '0.78rem',
+              }}>
+                <span style={{ color: '#4f46e5' }}>✓</span> {perk}
+              </div>
+            ))}
+          </div>
+
+          {/* Price + CTA */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div>
+              <span style={{ fontSize: '2rem', fontWeight: 900, color: '#818cf8' }}>$10</span>
+              <span style={{ color: '#444', fontSize: '0.82rem', marginLeft: 8 }}>one-time</span>
+            </div>
+            <a
+              href={`/search?q=${searchQuery}`}
+              style={{
+                background: '#4f46e5',
+                color: '#fff',
+                borderRadius: 12,
+                padding: '12px 24px',
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Get this guide →
+            </a>
+          </div>
+
+          {/* Mock download */}
+          <button disabled style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            width: '100%',
+            background: '#161616',
+            border: '1px solid #222',
+            color: '#3a3a3a',
+            borderRadius: 12,
+            padding: '11px',
+            fontSize: '0.88rem',
+            fontWeight: 600,
+            cursor: 'not-allowed',
+          }}>
+            🔒 Download PDF — purchase to unlock
+          </button>
+
+          <button
+            onClick={onClose}
+            style={{
+              display: 'block', width: '100%', marginTop: 12,
+              background: 'none', border: 'none',
+              color: '#333', fontSize: '0.82rem', cursor: 'pointer',
+            }}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
