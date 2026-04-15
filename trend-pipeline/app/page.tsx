@@ -353,7 +353,7 @@ export default function Home() {
             "Where you get to know the unknown"
           </p>
           <p style={{
-            color: '#4a4a5a',
+            color: '#4a4a5a', 
             fontSize: 'clamp(0.8rem, 1.5vw, 0.95rem)',
             fontStyle: 'italic',
             letterSpacing: '0.02em',
@@ -520,6 +520,131 @@ export default function Home() {
   );
 }
 
+// function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
+//   const searchQuery = encodeURIComponent(book.title);
+
+//   return (
+//     <div
+//       onClick={onClose}
+//       style={{
+//         position: 'fixed', inset: 0,
+//         background: 'rgba(0,0,0,0.82)',
+//         display: 'flex', alignItems: 'center', justifyContent: 'center',
+//         zIndex: 10000, padding: 24,
+//         backdropFilter: 'blur(4px)',
+//       }}
+//     >
+//       <div
+//         onClick={e => e.stopPropagation()}
+//         style={{
+//           background: '#111',
+//           border: '1px solid #222',
+//           borderRadius: 24,
+//           width: '100%',
+//           maxWidth: 500,
+//           overflow: 'hidden',
+//           animation: 'bookModalIn 0.25s cubic-bezier(0.34,1.2,0.64,1)',
+//         }}
+//       >
+//         <style>{`@keyframes bookModalIn { from { opacity:0; transform:scale(0.93) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }`}</style>
+
+//         {/* ── Thumbnail ── */}
+//         <div style={{
+//           height: 180,
+//           background: book.bg,
+//           position: 'relative',
+//           overflow: 'hidden',
+//           borderRadius: '24px 24px 0 0',
+//           display: 'flex',
+//           alignItems: 'center',
+//           justifyContent: 'center',
+//         }}>
+//           <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 12, background: 'rgba(0,0,0,0.35)' }} />
+//           <div style={{ position: 'absolute', top: -10, right: -10, fontSize: 160, opacity: 0.06, color: '#fff', lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>
+//             {book.pattern}
+//           </div>
+//           {book.image
+//             ? <img src={book.image} alt={book.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+//             : (
+//               <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '0 32px' }}>
+//                 <div style={{ color: book.accent, fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 10, opacity: 0.9 }}>
+//                   {book.label} · Hidden Library
+//                 </div>
+//                 <p style={{ color: '#fff', fontWeight: 800, fontSize: '1rem', lineHeight: 1.35, margin: 0, textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
+//                   {book.title}
+//                 </p>
+//               </div>
+//             )
+//           }
+//         </div>
+
+//         {/* ── Body ── */}
+//         <div style={{ padding: '24px 24px 28px' }}>
+//           <div style={{ color: '#4f46e5', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>
+//             {book.label} · Hidden Library
+//           </div>
+//           <h2 style={{ color: '#fff', fontWeight: 800, fontSize: '1.05rem', lineHeight: 1.35, margin: '0 0 10px' }}>
+//             {book.title}
+//           </h2>
+//           <p style={{ color: '#555', fontSize: '0.875rem', lineHeight: 1.7, margin: '0 0 20px' }}>
+//             {book.desc}
+//           </p>
+//           <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
+//             {['Instant PDF', '~40 pages', 'Keep forever'].map(perk => (
+//               <div key={perk} style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#444', fontSize: '0.75rem' }}>
+//                 <span style={{ color: '#4f46e5' }}>✓</span> {perk}
+//               </div>
+//             ))}
+//           </div>
+
+//           {/* ── Buttons ── */}
+//           <div style={{ display: 'flex', gap: 10 }}>
+//             <a
+//               href={`/search?q=${searchQuery}`}
+//               style={{
+//                 flex: 1,
+//                 display: 'flex',
+//                 flexDirection: 'column',
+//                 alignItems: 'center',
+//                 justifyContent: 'center',
+//                 padding: '14px 12px',
+//                 background: '#4f46e5',
+//                 borderRadius: 14,
+//                 textDecoration: 'none',
+//                 gap: 2,
+//               }}
+//             >
+//               <span style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 900, lineHeight: 1 }}>$10</span>
+//               <span style={{ color: '#a5b4fc', fontSize: '0.7rem', fontWeight: 600 }}>one-time · get guide →</span>
+//             </a>
+
+//             <button disabled style={{
+//               flex: 1,
+//               display: 'flex',
+//               flexDirection: 'column',
+//               alignItems: 'center',
+//               justifyContent: 'center',
+//               padding: '14px 12px',
+//               background: '#0d0d0d',
+//               border: '1px solid #1e1e1e',
+//               borderRadius: 14,
+//               gap: 3,
+//               cursor: 'not-allowed',
+//             }}>
+//               <span style={{ fontSize: '1rem' }}>🔒</span>
+//               <span style={{ color: '#2e2e2e', fontSize: '0.75rem', fontWeight: 600 }}>Download PDF</span>
+//               <span style={{ color: '#222', fontSize: '0.65rem' }}>purchase to unlock</span>
+//             </button>
+//           </div>
+
+//           <button onClick={onClose} style={{ display: 'block', width: '100%', marginTop: 16, background: 'none', border: 'none', color: '#2a2a2a', fontSize: '0.8rem', cursor: 'pointer' }}>
+//             close
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
 function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
   const searchQuery = encodeURIComponent(book.title);
 
@@ -527,127 +652,253 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
     <div
       onClick={onClose}
       style={{
-        position: 'fixed', inset: 0,
+        position: 'fixed',
+        inset: 0,
         background: 'rgba(0,0,0,0.82)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        zIndex: 10000, padding: 24,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 10000,
+        padding: 24,
         backdropFilter: 'blur(4px)',
       }}
     >
       <div
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         style={{
           background: '#111',
           border: '1px solid #222',
           borderRadius: 24,
           width: '100%',
-          maxWidth: 500,
+          maxWidth: 900,
+          display: 'flex',
           overflow: 'hidden',
           animation: 'bookModalIn 0.25s cubic-bezier(0.34,1.2,0.64,1)',
         }}
       >
-        <style>{`@keyframes bookModalIn { from { opacity:0; transform:scale(0.93) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }`}</style>
+        <style>{`
+          @keyframes bookModalIn {
+            from { opacity:0; transform:scale(0.93) translateY(20px); }
+            to { opacity:1; transform:scale(1) translateY(0); }
+          }
 
-        {/* ── Row 1: thumbnail (left) + title/subtitle (right) ── */}
-        <div style={{ display: 'flex', height: 200, borderBottom: '1px solid #1a1a1a' }}>
+          @media (max-width: 768px) {
+            .book-modal {
+              flex-direction: column !important;
+            }
+          }
+        `}</style>
 
-          {/* Left: book cover */}
-          <div style={{
+        {/* ── LEFT: Thumbnail ── */}
+        <div
+          style={{
             width: '45%',
-            flexShrink: 0,
+            minHeight: 340,
             background: book.bg,
             position: 'relative',
             overflow: 'hidden',
+            borderRadius: '24px 0 0 24px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-          }}>
-            <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 10, background: 'rgba(0,0,0,0.4)' }} />
-            <div style={{ position: 'absolute', top: -10, right: -10, fontSize: 130, opacity: 0.07, color: '#fff', lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>
-              {book.pattern}
-            </div>
-            {book.image
-              ? <img src={book.image} alt={book.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-              : (
-                <div style={{ padding: '16px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
-                  <p style={{ color: '#fff', fontWeight: 800, fontSize: '0.8rem', lineHeight: 1.35, margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
-                    {book.title}
-                  </p>
-                </div>
-              )
-            }
-          </div>
-
-          {/* Right: title + subtitle */}
-          <div style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            padding: '24px 20px',
-            gap: 10,
-            borderLeft: '1px solid #1a1a1a',
-            background: '#0d0d0d',
-          }}>
-            <div style={{ color: '#4f46e5', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase' }}>
-              {book.label} · Hidden Library
-            </div>
-            <p style={{ color: '#fff', fontSize: '1rem', fontWeight: 800, lineHeight: 1.3, margin: 0 }}>
-              {book.title}
-            </p>
-            <p style={{ color: '#555', fontSize: '0.78rem', lineHeight: 1.5, margin: 0 }}>
-              Instant PDF · Expert knowledge · Yours forever
-            </p>
-          </div>
-        </div>
-
-        {/* ── Row 2: full-width description ── */}
-        <div style={{ padding: '20px 24px', borderBottom: '1px solid #1a1a1a', background: '#0a0a0a' }}>
-          <p style={{ color: '#666', fontSize: '0.875rem', lineHeight: 1.7, margin: 0 }}>
-            {book.desc}
-          </p>
-        </div>
-
-        {/* ── Row 3: two buttons ── */}
-        <div style={{ display: 'flex' }}>
-          {/* Price badge */}
-          <a
-            href={`/search?q=${searchQuery}`}
+          }}
+        >
+          {/* Overlay strip */}
+          <div
             style={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '18px 16px',
-              background: '#4f46e5',
-              textDecoration: 'none',
-              gap: 2,
-              borderBottomLeftRadius: 24,
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: 12,
+              background: 'rgba(0,0,0,0.35)',
+            }}
+          />
+
+          {/* Pattern */}
+          <div
+            style={{
+              position: 'absolute',
+              top: -10,
+              right: -10,
+              fontSize: 160,
+              opacity: 0.06,
+              color: '#fff',
+              pointerEvents: 'none',
             }}
           >
-            <span style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 900, lineHeight: 1 }}>$10</span>
-            <span style={{ color: '#a5b4fc', fontSize: '0.72rem', fontWeight: 600 }}>one-time · get guide →</span>
-          </a>
+            {book.pattern}
+          </div>
 
-          {/* Download (locked) */}
-          <button disabled style={{
-            flex: 1,
+          {/* Image or fallback */}
+          {book.image ? (
+            <img
+              src={book.image}
+              alt={book.title}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+          ) : (
+            <div style={{ textAlign: 'center', padding: '0 32px', zIndex: 1 }}>
+              <div
+                style={{
+                  color: book.accent,
+                  fontSize: '9px',
+                  fontWeight: 700,
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  marginBottom: 10,
+                }}
+              >
+                {book.label} · Hidden Library
+              </div>
+
+              <p
+                style={{
+                  color: '#fff',
+                  fontWeight: 800,
+                  fontSize: '1.1rem',
+                  lineHeight: 1.4,
+                }}
+              >
+                {book.title}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* ── RIGHT: Content ── */}
+        <div
+          style={{
+            width: '55%',
+            padding: '32px',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
             justifyContent: 'center',
-            padding: '18px 16px',
-            background: '#0d0d0d',
-            border: 'none',
-            borderLeft: '1px solid #1a1a1a',
-            gap: 4,
-            cursor: 'not-allowed',
-            borderBottomRightRadius: 24,
-          }}>
-            <span style={{ fontSize: '1.1rem' }}>🔒</span>
-            <span style={{ color: '#333', fontSize: '0.78rem', fontWeight: 600 }}>Download PDF</span>
-            <span style={{ color: '#252525', fontSize: '0.68rem' }}>purchase to unlock</span>
+          }}
+        >
+          <div
+            style={{
+              color: '#4f46e5',
+              fontSize: '9px',
+              fontWeight: 700,
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              marginBottom: 10,
+            }}
+          >
+            {book.label} · Hidden Library
+          </div>
+
+          <h2
+            style={{
+              color: '#fff',
+              fontWeight: 800,
+              fontSize: '1.3rem',
+              lineHeight: 1.4,
+              marginBottom: 12,
+            }}
+          >
+            {book.title}
+          </h2>
+
+          <p
+            style={{
+              color: '#666',
+              fontSize: '0.9rem',
+              lineHeight: 1.7,
+              marginBottom: 24,
+            }}
+          >
+            {book.desc}
+          </p>
+
+          {/* Perks */}
+          <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
+            {['Instant PDF', '~40 pages', 'Keep forever'].map((perk) => (
+              <div
+                key={perk}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 5,
+                  color: '#444',
+                  fontSize: '0.75rem',
+                }}
+              >
+                <span style={{ color: '#4f46e5' }}>✓</span> {perk}
+              </div>
+            ))}
+          </div>
+
+          {/* Buttons */}
+          <div style={{ display: 'flex', gap: 10 }}>
+            <a
+              href={`/search?q=${searchQuery}`}
+              style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '14px',
+                background: '#4f46e5',
+                borderRadius: 14,
+                textDecoration: 'none',
+              }}
+            >
+              <span
+                style={{
+                  color: '#fff',
+                  fontSize: '1.3rem',
+                  fontWeight: 900,
+                }}
+              >
+                $10
+              </span>
+              <span
+                style={{
+                  color: '#a5b4fc',
+                  fontSize: '0.7rem',
+                }}
+              >
+                one-time · get guide →
+              </span>
+            </a>
+
+            <button
+              disabled
+              style={{
+                flex: 1,
+                padding: '14px',
+                background: '#0d0d0d',
+                border: '1px solid #1e1e1e',
+                borderRadius: 14,
+                cursor: 'not-allowed',
+              }}
+            >
+              <div style={{ fontSize: '1rem' }}>🔒</div>
+              <div style={{ color: '#2e2e2e', fontSize: '0.75rem' }}>
+                Download PDF
+              </div>
+            </button>
+          </div>
+
+          <button
+            onClick={onClose}
+            style={{
+              marginTop: 18,
+              background: 'none',
+              border: 'none',
+              color: '#2a2a2a',
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+            }}
+          >
+            close
           </button>
         </div>
       </div>
