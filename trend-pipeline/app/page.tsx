@@ -47,7 +47,7 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
   const abs = Math.abs(offset);
   const scale = 1 - abs * 0.12;
   const tx = offset * 240;
-  const ry = -offset * 14;
+  const ry = -offset * 28;
   const opacity = abs === 0 ? 1 : abs === 1 ? 0.82 : 0.55;
   const zIndex = 20 - abs * 5;
   const isCenter = offset === 0;
@@ -177,9 +177,20 @@ function BookCarousel() {
   const scrollCooldown = useRef(false);
   const touchStartX = useRef(0);
   const [modalBook, setModalBook] = useState<Book | null>(null);
+  const isPaused = useRef(false);
 
   function prev() { setIndex(i => (i - 1 + total) % total); }
   function next() { setIndex(i => (i + 1) % total); }
+
+  // Auto-rotate: advances every 2.5s, pauses on hover
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (!isPaused.current) {
+        setIndex(i => (i + 1) % total);
+      }
+    }, 2500);
+    return () => clearInterval(id);
+  }, [total]);
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault();
@@ -228,12 +239,19 @@ function BookCarousel() {
         zIndex: 0,
       }} />
 
-      {/* Carousel stage */}
+      {/* Carousel stage — perspective gives depth to the rotateY transforms */}
       <div
         onWheel={handleWheel}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        style={{ position: 'relative', height: 360, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'grab' }}
+        onMouseEnter={() => { isPaused.current = true; }}
+        onMouseLeave={() => { isPaused.current = false; }}
+        style={{
+          position: 'relative', height: 360,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'grab',
+          perspective: '1200px',
+        }}
       >
         {/* Books */}
         <div style={{ position: 'relative', width: 210, height: 300 }}>
