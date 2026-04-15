@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const CATEGORIES = [
@@ -309,6 +309,7 @@ export default function Home() {
         position: 'relative',
         overflow: 'hidden',
       }}>
+        
         {/* Subtle background gradient */}
         <div style={{
           position: 'absolute', inset: 0,
@@ -333,7 +334,7 @@ export default function Home() {
             fontWeight: 900, letterSpacing: '-0.04em',
             lineHeight: 1.08, marginBottom: 20,
           }}>
-            The knowledge they never taught you.<br />Found here.
+            Beyond the Classroom: Essential Knowledge Never Covered
           </h1>
 
           {/* Search */}
@@ -379,7 +380,7 @@ export default function Home() {
         </div>
 
         {/* Category pills — below carousel */}
-        <div style={{
+        {/* <div style={{
           display: 'flex', flexWrap: 'wrap',
           justifyContent: 'center', gap: 8,
           marginTop: 44, maxWidth: 700,
@@ -430,7 +431,11 @@ export default function Home() {
           >
             Browse all →
           </a>
-        </div>
+        </div> */}
+        
+        {/* Decorative space animations */}
+        <StarField />
+
       </section>
 
       {/* ══════════════════════════════════════
@@ -487,5 +492,126 @@ export default function Home() {
         ))}
       </footer>
     </main>
+  );
+}
+
+function StarField() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animId: number;
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Three layers: slow/small, medium, fast/large
+    const layers = [
+      { count: 120, speed: 0.015, size: 0.8, opacity: 0.4 },
+      { count: 60,  speed: 0.035, size: 1.3, opacity: 0.6 },
+      { count: 25,  speed: 0.06,  size: 2.0, opacity: 0.9 },
+    ];
+
+    type Star = { x: number; y: number; size: number; speed: number; opacity: number; twinkle: number; phase: number };
+    const stars: Star[] = [];
+
+    layers.forEach(layer => {
+      for (let i = 0; i < layer.count; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: layer.size * (0.6 + Math.random() * 0.8),
+          speed: layer.speed * (0.7 + Math.random() * 0.6),
+          opacity: layer.opacity * (0.5 + Math.random() * 0.5),
+          twinkle: 0.003 + Math.random() * 0.008,
+          phase: Math.random() * Math.PI * 2,
+        });
+      }
+    });
+
+    // Occasional shooting stars
+    type Shoot = { x: number; y: number; vx: number; vy: number; life: number; maxLife: number };
+    let shooters: Shoot[] = [];
+    let nextShoot = 2000 + Math.random() * 4000;
+    let elapsed = 0;
+
+    let last = performance.now();
+
+    const tick = (now: number) => {
+      const dt = now - last;
+      last = now;
+      elapsed += dt;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Stars
+      stars.forEach(s => {
+        s.phase += s.twinkle;
+        const alpha = s.opacity * (0.6 + 0.4 * Math.sin(s.phase));
+        s.y -= s.speed;
+        if (s.y < -2) s.y = canvas.height + 2;
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha.toFixed(3)})`;
+        ctx.fill();
+      });
+
+      // Shooting stars
+      if (elapsed >= nextShoot) {
+        const sx = Math.random() * canvas.width;
+        shooters.push({ x: sx, y: 0, vx: -1.5 - Math.random() * 2, vy: 2 + Math.random() * 3, life: 0, maxLife: 60 + Math.random() * 40 });
+        nextShoot = elapsed + 3000 + Math.random() * 6000;
+      }
+
+      shooters = shooters.filter(sh => sh.life < sh.maxLife);
+      shooters.forEach(sh => {
+        sh.life++;
+        sh.x += sh.vx;
+        sh.y += sh.vy;
+        const progress = sh.life / sh.maxLife;
+        const alpha = Math.sin(progress * Math.PI) * 0.9;
+        const tailLen = 80 + sh.life * 1.5;
+        const grad = ctx.createLinearGradient(sh.x, sh.y, sh.x - sh.vx * tailLen / Math.hypot(sh.vx, sh.vy), sh.y - sh.vy * tailLen / Math.hypot(sh.vx, sh.vy));
+        grad.addColorStop(0, `rgba(255,255,255,${alpha.toFixed(2)})`);
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.beginPath();
+        ctx.moveTo(sh.x, sh.y);
+        ctx.lineTo(sh.x - sh.vx * tailLen / Math.hypot(sh.vx, sh.vy), sh.y - sh.vy * tailLen / Math.hypot(sh.vx, sh.vy));
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      });
+
+      animId = requestAnimationFrame(tick);
+    };
+
+    animId = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }}
+    />
   );
 }
