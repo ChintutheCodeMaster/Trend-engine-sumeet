@@ -287,7 +287,7 @@ function BookCarousel() {
         }}>
           {BOOKS[index].label}
         </span>
-        <p style={{ color: '#333', fontSize: '0.75rem', marginTop: 10 }}>Click the cover to preview</p>
+        <p style={{ color: '#6666aa', fontSize: '0.75rem', marginTop: 10 }}>Click the cover to preview</p>
       </div>
 
       {/* Book modal */}
@@ -302,7 +302,7 @@ function BookCarousel() {
             style={{
               width: i === index ? 22 : 6,
               height: 6, borderRadius: 3,
-              background: i === index ? '#4f46e5' : '#252525',
+              background: i === index ? '#6366f1' : '#333355',
               border: 'none', cursor: 'pointer',
               transition: 'all 0.3s ease', padding: 0,
             }}
@@ -325,7 +325,7 @@ export default function Home() {
 
   return (
     <main style={{
-      background: '#0a0a0a',
+      background: '#0d0d14',
       color: '#f0f0f0',
       minHeight: '100vh',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", sans-serif',
@@ -363,7 +363,7 @@ export default function Home() {
           </h1>
           <p style={{
            
-            color: '#666',
+            color: '#aaaacc',
             fontSize: 'clamp(1rem, 2.5vw, 1.3rem)',
             fontWeight: 600,
             letterSpacing: '-0.02em',
@@ -372,7 +372,7 @@ export default function Home() {
             "Where you get to know the unknown"
           </p>
           <p style={{
-            color: '#4a4a5a', 
+            color: '#7878a0',
             fontSize: 'clamp(0.8rem, 1.5vw, 0.95rem)',
             fontStyle: 'italic',
             letterSpacing: '0.02em',
@@ -416,6 +416,30 @@ export default function Home() {
               </button>
             </div>
           </form>
+
+          {/* Vault link */}
+          <a
+            href="/vault"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              marginTop: 16,
+              background: '#111', border: '1px solid #1e1e1e',
+              color: '#666', borderRadius: 100,
+              padding: '8px 20px', fontSize: '0.83rem',
+              fontWeight: 500, textDecoration: 'none',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => {
+              const a = e.currentTarget as HTMLAnchorElement;
+              a.style.borderColor = '#4f46e5'; a.style.color = '#fff';
+            }}
+            onMouseLeave={e => {
+              const a = e.currentTarget as HTMLAnchorElement;
+              a.style.borderColor = '#1e1e1e'; a.style.color = '#666';
+            }}
+          >
+            <span>📚</span> Browse The Vault →
+          </a>
         </div>
 
         {/* THE CAROUSEL */}
@@ -486,14 +510,14 @@ export default function Home() {
           HOW IT WORKS
       ══════════════════════════════════════ */}
       <section style={{
-        borderTop: '1px solid #141414',
+        borderTop: '1px solid #1e1e2e',
         padding: '80px 24px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
       }}>
         <p style={{
-          color: '#333', fontSize: '0.75rem', fontWeight: 700,
+          color: '#7878a0', fontSize: '0.75rem', fontWeight: 700,
           letterSpacing: '2.5px', textTransform: 'uppercase', marginBottom: 40,
         }}>
           How it works
@@ -510,8 +534,8 @@ export default function Home() {
           ].map(item => (
             <div key={item.title} style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '1.6rem', marginBottom: 12 }}>{item.icon}</div>
-              <p style={{ fontWeight: 700, color: '#ddd', fontSize: '0.9rem', marginBottom: 8 }}>{item.title}</p>
-              <p style={{ color: '#555', fontSize: '0.82rem', lineHeight: 1.7 }}>{item.body}</p>
+              <p style={{ fontWeight: 700, color: '#eee', fontSize: '0.9rem', marginBottom: 8 }}>{item.title}</p>
+              <p style={{ color: '#8888aa', fontSize: '0.82rem', lineHeight: 1.7 }}>{item.body}</p>
             </div>
           ))}
         </div>
@@ -526,11 +550,12 @@ export default function Home() {
         gap: 24,
       }}>
         {[
-          { href: '/library', label: 'Library' },
-          { href: '/search',  label: 'Search' },
+          { href: '/vault',        label: 'The Vault' },
+          { href: '/library',      label: 'Library' },
+          { href: '/search',       label: 'Search' },
           { href: '/api/products', label: 'API' },
         ].map(l => (
-          <a key={l.href} href={l.href} style={{ color: '#2a2a2a', fontSize: '0.8rem', textDecoration: 'none' }}>
+          <a key={l.href} href={l.href} style={{ color: '#5555aa', fontSize: '0.8rem', textDecoration: 'none' }}>
             {l.label}
           </a>
         ))}
@@ -831,7 +856,7 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
 
           <p
             style={{
-              color: '#666',
+              color: '#9999bb',
               fontSize: '0.9rem',
               lineHeight: 1.7,
               marginBottom: 24,
@@ -849,7 +874,7 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 5,
-                  color: '#444',
+                  color: '#7777aa',
                   fontSize: '0.75rem',
                 }}
               >
@@ -905,7 +930,7 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
               }}
             >
               <div style={{ fontSize: '1rem' }}>🔒</div>
-              <div style={{ color: '#2e2e2e', fontSize: '0.75rem' }}>
+              <div style={{ color: '#5555aa', fontSize: '0.75rem' }}>
                 Download PDF
               </div>
             </button>
@@ -917,7 +942,7 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
               marginTop: 18,
               background: 'none',
               border: 'none',
-              color: '#2a2a2a',
+              color: '#6666aa',
               fontSize: '0.8rem',
               cursor: 'pointer',
             }}
