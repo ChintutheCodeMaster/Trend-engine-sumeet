@@ -219,7 +219,7 @@ function BookCarousel() {
 
   const visible = [-2, -1, 0, 1, 2].map(offset => {
     const bookIndex = (index + offset + total) % total;
-    return { book: BOOKS[bookIndex], offset };
+    return { book: BOOKS[bookIndex], offset, bookIndex };
   });
 
   return (
@@ -253,11 +253,12 @@ function BookCarousel() {
           perspective: '1200px',
         }}
       >
-        {/* Books */}
+        {/* Books — keyed by bookIndex so React keeps the same DOM node alive,
+            letting the CSS transform transition play instead of snapping */}
         <div style={{ position: 'relative', width: 210, height: 300 }}>
-          {visible.map(({ book, offset }) => (
+          {visible.map(({ book, offset, bookIndex }) => (
             <BookCover
-              key={`${index}-${offset}`}
+              key={bookIndex}
               book={book}
               offset={offset}
               onClick={() => setModalBook(book)}
@@ -674,11 +675,12 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
         inset: 0,
         background: 'rgba(0,0,0,0.82)',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         zIndex: 10000,
-        padding: 24,
+        padding: '16px 12px',
         backdropFilter: 'blur(4px)',
+        overflowY: 'auto',
       }}
     >
       <div
@@ -689,10 +691,12 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
           borderRadius: 24,
           width: '100%',
           maxWidth: 900,
+          margin: 'auto',
           display: 'flex',
           overflow: 'hidden',
           animation: 'bookModalIn 0.25s cubic-bezier(0.34,1.2,0.64,1)',
         }}
+        className="book-modal"
       >
         <style>{`
           @keyframes bookModalIn {
@@ -701,14 +705,15 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
           }
 
           @media (max-width: 768px) {
-            .book-modal {
-              flex-direction: column !important;
-            }
+            .book-modal { flex-direction: column !important; }
+            .book-modal-thumb { width: 100% !important; min-height: 180px !important; border-radius: 24px 24px 0 0 !important; }
+            .book-modal-body { width: 100% !important; padding: 20px !important; }
           }
         `}</style>
 
         {/* ── LEFT: Thumbnail ── */}
         <div
+          className="book-modal-thumb"
           style={{
             width: '45%',
             minHeight: 340,
@@ -790,6 +795,7 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
 
         {/* ── RIGHT: Content ── */}
         <div
+          className="book-modal-body"
           style={{
             width: '55%',
             padding: '32px',
