@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
 export const maxDuration = 30;
+
+function getSupabase() {
+  return createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_ANON_KEY!,
+  );
+}
 
 export async function POST(request: Request) {
   let query: string;
@@ -19,6 +27,14 @@ export async function POST(request: Request) {
   try {
     const { handleSearch } = require('../../../agents/searchAgent');
     const result = await handleSearch(query);
+
+    // Log search event (fire-and-forget)
+    getSupabase()
+      .from('search_events')
+      .insert({ query, result_found: !!result?.slug })
+      .then(() => {})
+      .catch(() => {});
+
     return NextResponse.json(result);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';
