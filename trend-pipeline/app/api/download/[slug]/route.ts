@@ -37,6 +37,13 @@ export async function GET(
     );
   }
 
+  // Log download event (fire-and-forget)
+  supabase
+    .from('download_events')
+    .insert({ product_slug: slug })
+    .then(() => {})
+    .catch(() => {});
+
   // Redirect to the Supabase Storage public URL — browser will download it
   const downloadUrl = new URL(product.pdf_url);
   downloadUrl.searchParams.set('download', `${product.product_title ?? slug}.pdf`);

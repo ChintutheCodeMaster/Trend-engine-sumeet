@@ -1,8 +1,8 @@
-// File: /Users/sumeetbhimanpally/Desktop/Trend-Engine/trend-pipeline/app/api/products/route.ts
-import * as entry from '../../../../../app/api/products/route.js'
+// File: /Users/sumeetbhimanpally/Desktop/Trend-Engine/trend-pipeline/app/api/analytics/route.ts
+import * as entry from '../../../../../app/api/analytics/route.js'
 import type { NextRequest } from 'next/server.js'
 
-type TEntry = typeof import('../../../../../app/api/products/route.js')
+type TEntry = typeof import('../../../../../app/api/analytics/route.js')
 
 // Check that the entry is a valid entry
 checkFields<Diff<{
