@@ -41,8 +41,7 @@ export async function GET(
   supabase
     .from('download_events')
     .insert({ product_slug: slug })
-    .then(() => {})
-    .catch(() => {});
+    .then(() => {}, () => {});
 
   // Redirect to the Supabase Storage public URL — browser will download it
   const downloadUrl = new URL(product.pdf_url);
