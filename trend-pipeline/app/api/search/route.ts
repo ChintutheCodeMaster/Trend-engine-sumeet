@@ -32,8 +32,7 @@ export async function POST(request: Request) {
     getSupabase()
       .from('search_events')
       .insert({ query, result_found: !!result?.slug })
-      .then(() => {})
-      .catch(() => {});
+      .then(() => {}, () => {});
 
     return NextResponse.json(result);
   } catch (err: unknown) {
