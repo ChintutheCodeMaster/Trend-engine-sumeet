@@ -3,13 +3,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const CATEGORIES = [
-  { slug: 'money',             label: 'Money',            emoji: '💰' },
-  { slug: 'business',          label: 'Business',         emoji: '🏢' },
-  { slug: 'career',            label: 'Career',           emoji: '📈' },
-  { slug: 'productivity',      label: 'Productivity',     emoji: '⚡' },
-  { slug: 'financial-health',  label: 'Financial Health', emoji: '🛡️' },
-];
 
 type Book = {
   title: string;
@@ -554,7 +547,7 @@ export default function Home() {
           { href: '/library',      label: 'Library' },
           { href: '/search',       label: 'Search' },
           { href: '/api/products', label: 'API' },
-          { href: '/analytics',    label: '📊' },
+          { href: '/analytics',    label: 'Analytics' },
         ].map(l => (
           <a key={l.href} href={l.href} style={{ color: '#5555aa', fontSize: '0.8rem', textDecoration: 'none' }}>
             {l.label}

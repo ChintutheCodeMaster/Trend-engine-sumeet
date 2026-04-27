@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Trophy, Medal, Award, BarChart2 } from 'lucide-react';
 
 type DayStats = { date: string; searches: number; downloads: number };
 type QueryRow = { query: string; count: number };
 type DownloadRow = { slug: string; title: string; category: string; count: number };
+type PopularBook = { slug: string; title: string; category: string; searches: number; downloads: number; score: number };
 
 type AnalyticsData = {
   totals: {
@@ -17,6 +19,7 @@ type AnalyticsData = {
   topQueries: QueryRow[];
   topDownloads: DownloadRow[];
   categoryDownloads: Record<string, number>;
+  popularBooks: PopularBook[];
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -349,6 +352,113 @@ export default function AnalyticsPage() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Most Popular Books */}
+        <div style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 16, padding: '24px', marginBottom: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Trophy size={15} color="#f59e0b" strokeWidth={2} />
+              <p style={{ fontWeight: 700, color: '#ccc', fontSize: '0.9rem', margin: 0 }}>Most Popular Books</p>
+            </div>
+            <div style={{ display: 'flex', gap: 16 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.72rem', color: '#555' }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: '#6366f1', display: 'inline-block' }} />
+                Searches
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.72rem', color: '#555' }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: '#22c55e', display: 'inline-block' }} />
+                Downloads
+              </span>
+            </div>
+          </div>
+
+          {data.popularBooks.length === 0 ? (
+            <p style={{ color: '#333', fontSize: '0.82rem' }}>No activity yet — books appear here once searched or downloaded.</p>
+          ) : (() => {
+            const maxSearches = Math.max(...data.popularBooks.map(b => b.searches), 1);
+            const maxDownloads = Math.max(...data.popularBooks.map(b => b.downloads), 1);
+            const rankColors = ['#f59e0b', '#9ca3af', '#b45309'];
+            const RankIcons = [
+              <Trophy key="1" size={13} color="#f59e0b" strokeWidth={2.5} />,
+              <Medal  key="2" size={13} color="#9ca3af" strokeWidth={2.5} />,
+              <Award  key="3" size={13} color="#b45309" strokeWidth={2.5} />,
+            ];
+
+            return data.popularBooks.map((book, i) => (
+              <div key={book.slug} style={{
+                display: 'grid',
+                gridTemplateColumns: '28px 1fr 200px 64px',
+                alignItems: 'center',
+                gap: 16,
+                padding: '12px 0',
+                borderBottom: i < data.popularBooks.length - 1 ? '1px solid #161616' : 'none',
+              }}>
+                {/* Rank */}
+                <div style={{
+                  width: 24, height: 24, borderRadius: 6,
+                  background: i < 3 ? `${rankColors[i]}18` : '#161616',
+                  color: i < 3 ? rankColors[i] : '#333',
+                  fontSize: '0.65rem', fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {i < 3 ? RankIcons[i] : i + 1}
+                </div>
+
+                {/* Title + category */}
+                <div style={{ minWidth: 0 }}>
+                  <a
+                    href={`/products/${book.slug}`}
+                    style={{ color: '#ddd', fontSize: '0.85rem', fontWeight: 600, lineHeight: 1.35, textDecoration: 'none', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#818cf8'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#ddd'; }}
+                  >
+                    {book.title}
+                  </a>
+                  <span style={{
+                    display: 'inline-block', marginTop: 3,
+                    background: `${CATEGORY_COLORS[book.category] ?? '#555'}18`,
+                    color: CATEGORY_COLORS[book.category] ?? '#555',
+                    fontSize: '0.6rem', fontWeight: 700,
+                    letterSpacing: '1px', textTransform: 'uppercase',
+                    padding: '1px 6px', borderRadius: 3,
+                  }}>
+                    {book.category.replace('-', ' ')}
+                  </span>
+                </div>
+
+                {/* Dual mini bars */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ flex: 1, height: 4, background: '#1a1a1a', borderRadius: 2, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${(book.searches / maxSearches) * 100}%`, background: '#6366f1', borderRadius: 2 }} />
+                    </div>
+                    <span style={{ color: '#444', fontSize: '0.68rem', minWidth: 20, textAlign: 'right' }}>{book.searches}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ flex: 1, height: 4, background: '#1a1a1a', borderRadius: 2, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${(book.downloads / maxDownloads) * 100}%`, background: '#22c55e', borderRadius: 2 }} />
+                    </div>
+                    <span style={{ color: '#444', fontSize: '0.68rem', minWidth: 20, textAlign: 'right' }}>{book.downloads}</span>
+                  </div>
+                </div>
+
+                {/* Score pill */}
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{
+                    display: 'inline-block',
+                    background: '#0d0d0d',
+                    border: '1px solid #1e1e1e',
+                    color: '#555',
+                    fontSize: '0.7rem', fontWeight: 700,
+                    padding: '3px 8px', borderRadius: 20,
+                  }}>
+                    {book.score}
+                  </span>
+                </div>
+              </div>
+            ));
+          })()}
         </div>
 
         {/* Category breakdown */}
