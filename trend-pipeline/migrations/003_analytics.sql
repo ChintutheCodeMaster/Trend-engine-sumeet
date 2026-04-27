@@ -1,5 +1,5 @@
 -- Analytics event tables for Hidden Library
--- Run this in Supabase SQL Editor
+
 
 CREATE TABLE IF NOT EXISTS search_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
