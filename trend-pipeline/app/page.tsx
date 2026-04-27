@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { FiSearch, FiBook, FiZap } from 'react-icons/fi';
 
 
 type Book = {
@@ -41,9 +42,9 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
   const scale = 1 - abs * 0.12;
   const tx = offset * 240;
   const ry = -offset * 28;
-  const opacity = abs === 0 ? 1 : abs === 1 ? 0.82 : 0.55;
-  const zIndex = 20 - abs * 5;
-  const isCenter = offset === 0;
+  const opacity = Math.max(0.1, 1 - abs * 0.23);
+  const zIndex = Math.round(20 - abs * 5);
+  const isCenter = abs < 0.5;
 
   if (book.image) {
     return (
@@ -55,14 +56,14 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
           height: 300,
           borderRadius: 8,
           overflow: 'hidden',
-          boxShadow: offset === 0
+          boxShadow: isCenter
             ? '0 32px 80px rgba(0,0,0,0.8), 6px 0 0 rgba(0,0,0,0.5) inset'
             : '0 16px 40px rgba(0,0,0,0.5)',
           transform: `translateX(${tx}px) scale(${scale}) rotateY(${ry}deg)`,
           opacity,
           zIndex,
           cursor: isCenter ? 'pointer' : 'default',
-          transition: 'transform 0.35s cubic-bezier(0.34,1.1,0.64,1), opacity 0.3s ease, box-shadow 0.3s ease',
+          transition: 'box-shadow 0.3s ease',
         }}>
         <img src={book.image} alt={book.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
@@ -76,14 +77,14 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
       height: 300,
       borderRadius: 8,
       background: book.bg,
-      boxShadow: offset === 0
+      boxShadow: isCenter
         ? '0 32px 80px rgba(0,0,0,0.8), 6px 0 0 rgba(0,0,0,0.5) inset, -1px 0 0 rgba(255,255,255,0.05) inset'
         : '0 16px 40px rgba(0,0,0,0.5)',
       transform: `translateX(${tx}px) scale(${scale}) rotateY(${ry}deg)`,
       opacity,
       zIndex,
       cursor: isCenter ? 'pointer' : 'default',
-      transition: 'transform 0.35s cubic-bezier(0.34,1.1,0.64,1), opacity 0.3s ease, box-shadow 0.3s ease',
+      transition: 'box-shadow 0.3s ease',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
@@ -165,40 +166,35 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
 }
 
 function BookCarousel() {
-  const [index, setIndex] = useState(0);
   const total = BOOKS.length;
-  const scrollCooldown = useRef(false);
+  const posRef = useRef(0);
+  const [, setTick] = useState(0);
+  const rafRef = useRef(0);
+  const isPaused = useRef(false);
   const touchStartX = useRef(0);
   const [modalBook, setModalBook] = useState<Book | null>(null);
-  const isPaused = useRef(false);
 
-  function prev() { setIndex(i => (i - 1 + total) % total); }
-  function next() { setIndex(i => (i + 1) % total); }
-
-  // Auto-rotate: advances every 2.5s, pauses on hover
+  // Continuous rAF loop — increments float position each frame
   useEffect(() => {
-    const id = setInterval(() => {
+    const speed = 0.004; // cards per frame (~4s per card at 60fps)
+    function tick() {
       if (!isPaused.current) {
-        setIndex(i => (i + 1) % total);
+        posRef.current = (posRef.current + speed) % total;
+        setTick(n => n + 1);
       }
-    }, 2500);
-    return () => clearInterval(id);
+      rafRef.current = requestAnimationFrame(tick);
+    }
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
   }, [total]);
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault();
-    if (scrollCooldown.current) return;
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (delta > 15) {
-      next();
-    } else if (delta < -15) {
-      prev();
-    } else {
-      return;
+    if (Math.abs(delta) > 15) {
+      posRef.current = (posRef.current + (delta > 0 ? 0.6 : -0.6) + total) % total;
     }
-    scrollCooldown.current = true;
-    setTimeout(() => { scrollCooldown.current = false; }, 380);
-  }, []);
+  }, [total]);
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
@@ -206,14 +202,25 @@ function BookCarousel() {
 
   function handleTouchEnd(e: React.TouchEvent) {
     const dx = touchStartX.current - e.changedTouches[0].clientX;
-    if (dx > 40) next();
-    else if (dx < -40) prev();
+    if (Math.abs(dx) > 40) {
+      posRef.current = (posRef.current + (dx > 0 ? 1 : -1) + total) % total;
+    }
   }
 
-  const visible = [-2, -1, 0, 1, 2].map(offset => {
-    const bookIndex = (index + offset + total) % total;
-    return { book: BOOKS[bookIndex], offset, bookIndex };
-  });
+  // Compute visible cards with fractional offsets
+  const pos = posRef.current;
+  const visible: { book: Book; offset: number; bookIndex: number }[] = [];
+  for (let i = 0; i < total; i++) {
+    let offset = i - pos;
+    if (offset > total / 2) offset -= total;
+    if (offset < -total / 2) offset += total;
+    if (Math.abs(offset) <= 2.6) {
+      visible.push({ book: BOOKS[i], offset, bookIndex: i });
+    }
+  }
+
+  // Nearest card to center — for glow colour and info text
+  const centerIndex = Math.round(pos) % total;
 
   return (
     <div style={{ width: '100%', position: 'relative' }}>
@@ -226,7 +233,7 @@ function BookCarousel() {
         width: 300,
         height: 300,
         borderRadius: '50%',
-        background: `radial-gradient(circle, ${BOOKS[index].accent}18 0%, transparent 70%)`,
+        background: `radial-gradient(circle, ${BOOKS[centerIndex].accent}18 0%, transparent 70%)`,
         transition: 'background 0.5s ease',
         pointerEvents: 'none',
         zIndex: 0,
@@ -267,7 +274,7 @@ function BookCarousel() {
           maxWidth: 480, margin: '0 auto 6px',
           transition: 'opacity 0.3s',
         }}>
-          "{BOOKS[index].title}"
+          "{BOOKS[centerIndex].title}"
         </p>
         <span style={{
           display: 'inline-block',
@@ -278,7 +285,7 @@ function BookCarousel() {
           letterSpacing: '2px', textTransform: 'uppercase',
           padding: '3px 12px', borderRadius: 100,
         }}>
-          {BOOKS[index].label}
+          {BOOKS[centerIndex].label}
         </span>
         <p style={{ color: '#6666aa', fontSize: '0.75rem', marginTop: 10 }}>Click the cover to preview</p>
       </div>
@@ -291,11 +298,11 @@ function BookCarousel() {
         {BOOKS.map((_, i) => (
           <button
             key={i}
-            onClick={() => setIndex(i)}
+            onClick={() => { posRef.current = i; }}
             style={{
-              width: i === index ? 22 : 6,
+              width: i === centerIndex ? 22 : 6,
               height: 6, borderRadius: 3,
-              background: i === index ? '#6366f1' : '#333355',
+              background: i === centerIndex ? '#6366f1' : '#333355',
               border: 'none', cursor: 'pointer',
               transition: 'all 0.3s ease', padding: 0,
             }}
@@ -521,12 +528,12 @@ export default function Home() {
           gap: 32, maxWidth: 640, width: '100%',
         }}>
           {[
-            { icon: '🔍', title: 'Ask anything',    body: 'Type your exact question — the more specific, the better.' },
-            { icon: '📚', title: 'Get a document',  body: 'We find or build a deep-dive guide that answers it directly.' },
-            { icon: '⚡', title: 'Instant access',  body: 'One-time $10 payment, instant download, no subscription.' },
+            { icon: <FiSearch size={28} />, title: 'Ask anything',    body: 'Type your exact question — the more specific, the better.' },
+            { icon: <FiBook   size={28} />, title: 'Get a document',  body: 'We find or build a deep-dive guide that answers it directly.' },
+            { icon: <FiZap    size={28} />, title: 'Instant access',  body: 'One-time $10 payment, instant download, no subscription.' },
           ].map(item => (
             <div key={item.title} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '1.6rem', marginBottom: 12 }}>{item.icon}</div>
+              <div style={{ display: 'flex', justifyContent: 'center', color: '#a78bfa', marginBottom: 12 }}>{item.icon}</div>
               <p style={{ fontWeight: 700, color: '#eee', fontSize: '0.9rem', marginBottom: 8 }}>{item.title}</p>
               <p style={{ color: '#8888aa', fontSize: '0.82rem', lineHeight: 1.7 }}>{item.body}</p>
             </div>
