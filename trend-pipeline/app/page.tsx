@@ -554,7 +554,7 @@ export default function Home() {
           { href: '/library',      label: 'Library' },
           { href: '/search',       label: 'Search' },
           { href: '/api/products', label: 'API' },
-          { href: '/analytics',    label: 'Analytics' },
+          // { href: '/analytics',    label: 'Analytics' },
         ].map(l => (
           <a key={l.href} href={l.href} style={{ color: '#5555aa', fontSize: '0.8rem', textDecoration: 'none' }}>
             {l.label}
