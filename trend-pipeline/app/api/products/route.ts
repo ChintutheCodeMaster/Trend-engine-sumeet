@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 function getSupabase() {
@@ -8,13 +8,23 @@ function getSupabase() {
   );
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const carousel = searchParams.get('carousel') === 'true';
+
   const supabase = getSupabase();
 
-  const { data: products, error } = await supabase
+  let query = supabase
     .from('products')
-    .select('id, slug, keyword, category, score, headline, subheadline, stripe_url, created_at')
+    .select('id, slug, keyword, category, score, headline, subheadline, stripe_url, pdf_url, created_at')
+    .not('pdf_url', 'is', null)
     .order('created_at', { ascending: false });
+
+  if (carousel) {
+    query = query.limit(18);
+  }
+
+  const { data: products, error } = await query;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -24,7 +34,7 @@ export async function GET() {
     total: products.length,
     products: products.map(p => ({
       ...p,
-      landingUrl: `/products/${p.slug}`
-    }))
+      landingUrl: `/products/${p.slug}`,
+    })),
   });
 }

@@ -4,38 +4,39 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiSearch, FiBook, FiZap } from 'react-icons/fi';
 
-
 type Book = {
+  slug: string;
   title: string;
   category: string;
   label: string;
   bg: string;
   accent: string;
   pattern: string;
-  image?: string;
   desc: string;
 };
 
-const BOOKS: Book[] = [
-  { title: 'How to Pay Yourself from an LLC Without Double Taxation',    category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#1e3a6e,#1d4ed8)', accent: '#60a5fa', pattern: '◈', image: '/thumbnails/1.png',  desc: 'The exact salary vs. distribution split that minimises your tax bill — with worked examples for single-member and multi-member LLCs.' },
-  { title: "The Freelancer's Complete Tax Playbook",                      category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#134e4a,#0f766e)', accent: '#2dd4bf', pattern: '◇', image: '/thumbnails/2.png',  desc: 'Quarterly estimates, deductible expenses, home-office rules, and retirement accounts — everything a self-employed person needs to stop overpaying.' },
-  { title: 'Negotiating Your Salary: A Step-by-Step System',             category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#7c2d12,#c2410c)', accent: '#fb923c', pattern: '△', image: '/thumbnails/3.png',  desc: 'Word-for-word scripts, counter-offer frameworks, and the timing tricks that get you 10–20% more without risking the offer.' },
-  { title: 'Getting Out of Credit Card Debt in 18 Months',              category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#14532d,#16a34a)', accent: '#86efac', pattern: '○', image: '/thumbnails/4.png',  desc: 'A month-by-month payoff plan with balance transfer strategy, interest negotiation calls, and a cash-flow tracker included.' },
-  { title: 'Building a 6-Figure Consulting Business',                    category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#4c1d95,#7c3aed)', accent: '#c4b5fd', pattern: '✦', image: '/thumbnails/5.png',  desc: 'How to package expertise, price for profit, land the first 5 clients, and build retainer revenue that compounds month over month.' },
-  { title: 'Deep Work System for Remote Workers',                        category: 'productivity',     label: 'Productivity',     bg: 'linear-gradient(145deg,#1e1b4b,#4f46e5)', accent: '#a5b4fc', pattern: '▣', image: '/thumbnails/6.png',  desc: 'A proven 4-block daily schedule, distraction audit, and environment design guide that doubles output without working longer hours.' },
-  { title: 'S-Corp vs LLC: Which Structure Saves More Tax',              category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#7f1d1d,#b91c1c)', accent: '#fca5a5', pattern: '◉', image: '/thumbnails/7.png',  desc: 'Side-by-side tax math at every income level, the exact S-Corp election threshold, and the paperwork checklist to switch structures.' },
-  { title: 'Emergency Fund Blueprint: 6 Months in 12 Steps',            category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#064e3b,#047857)', accent: '#6ee7b7', pattern: '◐', image: '/thumbnails/8.png',  desc: 'A step-by-step savings ladder that builds a 6-month cushion in 12 months, even on a tight budget — with high-yield account recommendations.' },
-  { title: 'How to Raise Your Freelance Rates Without Losing Clients',  category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#78350f,#b45309)', accent: '#fcd34d', pattern: '◆', image: '/thumbnails/9.png',  desc: 'The announcement email template, the timing strategy, and the value-reframe conversation that keeps 90% of clients when you raise rates.' },
-  { title: 'The LinkedIn Outbound System That Actually Works',           category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#0c4a6e,#0369a1)', accent: '#7dd3fc', pattern: '◈', image: '/thumbnails/10.png', desc: 'A repeatable 5-step outreach sequence — profile optimisation, targeting filters, connection notes, and follow-up cadence — that books calls.' },
-  { title: 'Invoice & Cash Flow for Solo Founders',                      category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#172554,#1e40af)', accent: '#93c5fd', pattern: '▲', desc: 'Net-30 vs. upfront payment terms, late-fee clauses, and a 13-week cash flow template so you always know what hits your account next.' },
-  { title: 'ADHD Productivity: A System Built for Your Brain',          category: 'productivity',     label: 'Productivity',     bg: 'linear-gradient(145deg,#4a044e,#7e22ce)', accent: '#e879f9', pattern: '◎', desc: 'Body-doubling, time-blocking, and external accountability structures designed specifically for how ADHD brains actually function.' },
-  { title: 'Buying Your First Investment Property With Little Capital', category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#022c22,#065f46)', accent: '#34d399', pattern: '✧', desc: 'House-hacking, BRRRR method, FHA loan strategy — real paths to a first rental property with under $20k out of pocket.' },
-  { title: 'Client Contracts That Actually Protect You',                category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#2e1065,#4338ca)', accent: '#818cf8', pattern: '◇', desc: 'The 9 clauses every freelance contract must have, plus ready-to-use templates for scope creep, kill fees, and IP ownership.' },
-  { title: 'The 30-Day Budget Reset',                                    category: 'financial-health', label: 'Financial Health', bg: 'linear-gradient(145deg,#052e16,#166534)', accent: '#4ade80', pattern: '○', desc: 'A full spending audit, zero-based budget template, and 30-day habit tracker that rewires how you relate to money in one month.' },
-  { title: 'Getting Promoted Without Playing Office Politics',           category: 'career',           label: 'Career',           bg: 'linear-gradient(145deg,#451a03,#92400e)', accent: '#fbbf24', pattern: '△', desc: 'How to build visibility, document impact, and have the promotion conversation — without schmoozing or compromising your integrity.' },
-  { title: 'Pricing Your Services for Premium Clients',                  category: 'business',         label: 'Business',         bg: 'linear-gradient(145deg,#3b0764,#6d28d9)', accent: '#ddd6fe', pattern: '✦', desc: 'Value-based pricing frameworks, anchor pricing psychology, and the proposal structure that makes your rate feel like a bargain.' },
-  { title: 'Building a Second Income Stream While Fully Employed',      category: 'money',            label: 'Money',            bg: 'linear-gradient(145deg,#0f172a,#1e3a8a)', accent: '#bfdbfe', pattern: '▣', desc: 'The 5 lowest-risk side income models for full-time employees, with a 90-day launch plan that fits inside evenings and weekends.' },
-];
+const CATEGORY_THEMES: Record<string, { bg: string; accent: string; pattern: string; label: string }> = {
+  money:              { bg: 'linear-gradient(145deg,#1e3a6e,#1d4ed8)', accent: '#60a5fa', pattern: '◈', label: 'Money' },
+  business:           { bg: 'linear-gradient(145deg,#4c1d95,#7c3aed)', accent: '#c4b5fd', pattern: '✦', label: 'Business' },
+  career:             { bg: 'linear-gradient(145deg,#7c2d12,#c2410c)', accent: '#fb923c', pattern: '△', label: 'Career' },
+  productivity:       { bg: 'linear-gradient(145deg,#1e1b4b,#4f46e5)', accent: '#a5b4fc', pattern: '▣', label: 'Productivity' },
+  'financial-health': { bg: 'linear-gradient(145deg,#14532d,#16a34a)', accent: '#86efac', pattern: '○', label: 'Financial Health' },
+};
+const DEFAULT_THEME = { bg: 'linear-gradient(145deg,#1a1a2e,#16213e)', accent: '#818cf8', pattern: '◇', label: 'General' };
+
+function dbProductToBook(p: { slug: string; keyword: string; category: string; headline?: string; subheadline?: string }): Book {
+  const theme = CATEGORY_THEMES[p.category] ?? DEFAULT_THEME;
+  return {
+    slug: p.slug,
+    title: p.headline || p.keyword,
+    category: p.category,
+    label: theme.label,
+    bg: theme.bg,
+    accent: theme.accent,
+    pattern: theme.pattern,
+    desc: p.subheadline || '',
+  };
+}
 
 function BookCover({ book, offset, onClick }: { book: Book; offset: number; onClick?: () => void }) {
   const abs = Math.abs(offset);
@@ -45,30 +46,6 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
   const opacity = Math.max(0.1, 1 - abs * 0.23);
   const zIndex = Math.round(20 - abs * 5);
   const isCenter = abs < 0.5;
-
-  if (book.image) {
-    return (
-      <div
-        onClick={isCenter ? onClick : undefined}
-        style={{
-          position: 'absolute',
-          width: 210,
-          height: 300,
-          borderRadius: 8,
-          overflow: 'hidden',
-          boxShadow: isCenter
-            ? '0 32px 80px rgba(0,0,0,0.8), 6px 0 0 rgba(0,0,0,0.5) inset'
-            : '0 16px 40px rgba(0,0,0,0.5)',
-          transform: `translateX(${tx}px) scale(${scale}) rotateY(${ry}deg)`,
-          opacity,
-          zIndex,
-          cursor: isCenter ? 'pointer' : 'default',
-          transition: 'box-shadow 0.3s ease',
-        }}>
-        <img src={book.image} alt={book.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-      </div>
-    );
-  }
 
   return (
     <div onClick={isCenter ? onClick : undefined} style={{
@@ -165,8 +142,8 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
   );
 }
 
-function BookCarousel() {
-  const total = BOOKS.length;
+function BookCarousel({ books }: { books: Book[] }) {
+  const total = books.length;
   const posRef = useRef(0);
   const [, setTick] = useState(0);
   const rafRef = useRef(0);
@@ -174,9 +151,8 @@ function BookCarousel() {
   const touchStartX = useRef(0);
   const [modalBook, setModalBook] = useState<Book | null>(null);
 
-  // Continuous rAF loop — increments float position each frame
   useEffect(() => {
-    const speed = 0.004; // cards per frame (~4s per card at 60fps)
+    const speed = 0.004;
     function tick() {
       if (!isPaused.current) {
         posRef.current = (posRef.current + speed) % total;
@@ -207,7 +183,6 @@ function BookCarousel() {
     }
   }
 
-  // Compute visible cards with fractional offsets
   const pos = posRef.current;
   const visible: { book: Book; offset: number; bookIndex: number }[] = [];
   for (let i = 0; i < total; i++) {
@@ -215,31 +190,24 @@ function BookCarousel() {
     if (offset > total / 2) offset -= total;
     if (offset < -total / 2) offset += total;
     if (Math.abs(offset) <= 2.6) {
-      visible.push({ book: BOOKS[i], offset, bookIndex: i });
+      visible.push({ book: books[i], offset, bookIndex: i });
     }
   }
 
-  // Nearest card to center — for glow colour and info text
   const centerIndex = Math.round(pos) % total;
+  const centerBook = books[centerIndex];
 
   return (
     <div style={{ width: '100%', position: 'relative' }}>
-      {/* Glow behind center book */}
       <div style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
+        position: 'absolute', top: '50%', left: '50%',
         transform: 'translate(-50%, -60%)',
-        width: 300,
-        height: 300,
-        borderRadius: '50%',
-        background: `radial-gradient(circle, ${BOOKS[centerIndex].accent}18 0%, transparent 70%)`,
+        width: 300, height: 300, borderRadius: '50%',
+        background: `radial-gradient(circle, ${centerBook.accent}18 0%, transparent 70%)`,
         transition: 'background 0.5s ease',
-        pointerEvents: 'none',
-        zIndex: 0,
+        pointerEvents: 'none', zIndex: 0,
       }} />
 
-      {/* Carousel stage — perspective gives depth to the rotateY transforms */}
       <div
         onWheel={handleWheel}
         onTouchStart={handleTouchStart}
@@ -249,12 +217,9 @@ function BookCarousel() {
         style={{
           position: 'relative', height: 360,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'grab',
-          perspective: '1200px',
+          cursor: 'grab', perspective: '1200px',
         }}
       >
-        {/* Books — keyed by bookIndex so React keeps the same DOM node alive,
-            letting the CSS transform transition play instead of snapping */}
         <div style={{ position: 'relative', width: 210, height: 300 }}>
           {visible.map(({ book, offset, bookIndex }) => (
             <BookCover
@@ -267,44 +232,32 @@ function BookCarousel() {
         </div>
       </div>
 
-      {/* Current book info */}
       <div style={{ textAlign: 'center', marginTop: 12, minHeight: 52 }}>
-        <p style={{
-          color: '#ccc', fontSize: '0.95rem', fontWeight: 600,
-          maxWidth: 480, margin: '0 auto 6px',
-          transition: 'opacity 0.3s',
-        }}>
-          "{BOOKS[centerIndex].title}"
+        <p style={{ color: '#ccc', fontSize: '0.95rem', fontWeight: 600, maxWidth: 480, margin: '0 auto 6px', transition: 'opacity 0.3s' }}>
+          "{centerBook.title}"
         </p>
         <span style={{
-          display: 'inline-block',
-          background: '#4f46e518',
-          border: '1px solid #4f46e540',
-          color: '#818cf8',
-          fontSize: '10px', fontWeight: 700,
-          letterSpacing: '2px', textTransform: 'uppercase',
-          padding: '3px 12px', borderRadius: 100,
+          display: 'inline-block', background: '#4f46e518',
+          border: '1px solid #4f46e540', color: '#818cf8',
+          fontSize: '10px', fontWeight: 700, letterSpacing: '2px',
+          textTransform: 'uppercase', padding: '3px 12px', borderRadius: 100,
         }}>
-          {BOOKS[centerIndex].label}
+          {centerBook.label}
         </span>
         <p style={{ color: '#6666aa', fontSize: '0.75rem', marginTop: 10 }}>Click the cover to preview</p>
       </div>
 
-      {/* Book modal */}
       {modalBook && <BookModal book={modalBook} onClose={() => setModalBook(null)} />}
 
-      {/* Dots */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 20 }}>
-        {BOOKS.map((_, i) => (
+        {books.map((_: Book, i: number) => (
           <button
             key={i}
             onClick={() => { posRef.current = i; }}
             style={{
-              width: i === centerIndex ? 22 : 6,
-              height: 6, borderRadius: 3,
+              width: i === centerIndex ? 22 : 6, height: 6, borderRadius: 3,
               background: i === centerIndex ? '#6366f1' : '#333355',
-              border: 'none', cursor: 'pointer',
-              transition: 'all 0.3s ease', padding: 0,
+              border: 'none', cursor: 'pointer', transition: 'all 0.3s ease', padding: 0,
             }}
           />
         ))}
@@ -315,7 +268,17 @@ function BookCarousel() {
 
 export default function Home() {
   const [query, setQuery] = useState('');
+  const [books, setBooks] = useState<Book[]>([]);
+  const [booksLoading, setBooksLoading] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    fetch('/api/products?carousel=true')
+      .then(r => r.json())
+      .then(data => setBooks((data.products ?? []).map(dbProductToBook)))
+      .catch(() => {})
+      .finally(() => setBooksLoading(false));
+  }, []);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -444,7 +407,20 @@ export default function Home() {
 
         {/* THE CAROUSEL */}
         <div style={{ width: '100%', maxWidth: 1000, position: 'relative', zIndex: 1 }}>
-          <BookCarousel />
+          {booksLoading ? (
+            <div style={{ textAlign: 'center', padding: '80px 0', color: '#333' }}>
+              <div style={{ width: 28, height: 28, border: '2px solid #4f46e5', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 14px' }} />
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+          ) : books.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '80px 24px' }}>
+              <p style={{ fontSize: '2rem', marginBottom: 16 }}>📭</p>
+              <p style={{ color: '#444', fontSize: '1rem', fontWeight: 600, marginBottom: 8 }}>No books yet</p>
+              <p style={{ color: '#333', fontSize: '0.85rem' }}>Search for a topic above to generate the first guide.</p>
+            </div>
+          ) : (
+            <BookCarousel books={books} />
+          )}
         </div>
 
         {/* Category pills — below carousel */}
@@ -690,8 +666,8 @@ export default function Home() {
 //     </div>
 //   );
 // }
+
 function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
-  const searchQuery = encodeURIComponent(book.title);
 
   return (
     <div
@@ -779,44 +755,14 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
             {book.pattern}
           </div>
 
-          {/* Image or fallback */}
-          {book.image ? (
-            <img
-              src={book.image}
-              alt={book.title}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-              }}
-            />
-          ) : (
-            <div style={{ textAlign: 'center', padding: '0 32px', zIndex: 1 }}>
-              <div
-                style={{
-                  color: book.accent,
-                  fontSize: '9px',
-                  fontWeight: 700,
-                  letterSpacing: '2px',
-                  textTransform: 'uppercase',
-                  marginBottom: 10,
-                }}
-              >
-                {book.label} · Hidden Library
-              </div>
-
-              <p
-                style={{
-                  color: '#fff',
-                  fontWeight: 800,
-                  fontSize: '1.1rem',
-                  lineHeight: 1.4,
-                }}
-              >
-                {book.title}
-              </p>
+          <div style={{ textAlign: 'center', padding: '0 32px', zIndex: 1 }}>
+            <div style={{ color: book.accent, fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 10 }}>
+              {book.label} · Hidden Library
             </div>
-          )}
+            <p style={{ color: '#fff', fontWeight: 800, fontSize: '1.1rem', lineHeight: 1.4 }}>
+              {book.title}
+            </p>
+          </div>
         </div>
 
         {/* ── RIGHT: Content ── */}
@@ -887,54 +833,30 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
           {/* Buttons */}
           <div style={{ display: 'flex', gap: 10 }}>
             <a
-              href={`/search?q=${searchQuery}`}
+              href={`/api/download/${book.slug}`}
               style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '14px',
-                background: '#4f46e5',
-                borderRadius: 14,
-                textDecoration: 'none',
+                flex: 1, display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center',
+                padding: '14px', background: '#4f46e5',
+                borderRadius: 14, textDecoration: 'none', gap: 3,
               }}
             >
-              <span
-                style={{
-                  color: '#fff',
-                  fontSize: '1.3rem',
-                  fontWeight: 900,
-                }}
-              >
-                $10
-              </span>
-              <span
-                style={{
-                  color: '#a5b4fc',
-                  fontSize: '0.7rem',
-                }}
-              >
-                one-time · get guide →
-              </span>
+              <span style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 800 }}>Download PDF</span>
+              <span style={{ color: '#a5b4fc', fontSize: '0.7rem' }}>instant · free access</span>
             </a>
-
-            <button
-              disabled
+            <a
+              href={`/products/${book.slug}`}
               style={{
-                flex: 1,
-                padding: '14px',
-                background: '#0d0d0d',
-                border: '1px solid #1e1e1e',
-                borderRadius: 14,
-                cursor: 'not-allowed',
+                flex: 1, display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center',
+                padding: '14px', background: 'transparent',
+                border: '1px solid #2a2a3a', borderRadius: 14,
+                textDecoration: 'none', gap: 3,
               }}
             >
-              <div style={{ fontSize: '1rem' }}>🔒</div>
-              <div style={{ color: '#5555aa', fontSize: '0.75rem' }}>
-                Download PDF
-              </div>
-            </button>
+              <span style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 700 }}>View Page</span>
+              <span style={{ color: '#6666aa', fontSize: '0.7rem' }}>full details →</span>
+            </a>
           </div>
 
           <button
