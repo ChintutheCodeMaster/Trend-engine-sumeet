@@ -107,6 +107,17 @@ async function runBuild(jobId: string, userQuery: string) {
     .update({ status: 'landing_ready', product_slug: slug })
     .eq('id', jobId);
 
+  // Generate and store embedding for semantic search matching
+  try {
+    const { generateEmbedding } = require('../../../../lib/embeddings');
+    const embeddingText = `${userQuery} ${landingCopy.headline}`;
+    const embedding = await generateEmbedding(embeddingText);
+    await supabase.from('products').update({ embedding }).eq('slug', slug);
+    console.log(`[build] Embedding stored for "${slug}"`);
+  } catch (embErr: any) {
+    console.error(`[build] Embedding generation failed (non-fatal): ${embErr.message}`);
+  }
+
   console.log(`[build] Phase 1 complete. slug="${slug}"`);
 
   // ── Phase 2: Product guide + Stripe ──────────────────────────────────────

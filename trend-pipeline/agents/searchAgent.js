@@ -6,17 +6,30 @@ function getSupabase() {
   return createClient(process.env.SUPABASE_URL, key);
 }
 
-// Search existing evergreen products using ilike on keyword and headline
+// Search existing evergreen products using pgvector semantic similarity
 async function searchExistingProducts(query) {
   const supabase = getSupabase();
-  const { data } = await supabase
-    .from('products')
-    .select('id, slug, keyword, category, headline, subheadline, stripe_url, times_found_in_search')
-    .or(`keyword.ilike.%${query}%,headline.ilike.%${query}%`)
-    .eq('evergreen', true)
-    .order('times_found_in_search', { ascending: false })
-    .limit(3);
-  return data || [];
+  try {
+    const { generateEmbedding } = require('../lib/embeddings');
+    const embedding = await generateEmbedding(query);
+    const { data, error } = await supabase.rpc('match_products', {
+      query_embedding: embedding,
+      similarity_threshold: 0.78,
+      match_count: 1,
+    });
+    if (error) throw new Error(error.message);
+    return data || [];
+  } catch (err) {
+    console.error('[searchAgent] Vector search failed, falling back to ilike:', err.message);
+    const { data } = await supabase
+      .from('products')
+      .select('id, slug, keyword, category, headline, subheadline, stripe_url, times_found_in_search')
+      .or(`keyword.ilike.%${query}%,headline.ilike.%${query}%`)
+      .eq('evergreen', true)
+      .order('times_found_in_search', { ascending: false })
+      .limit(1);
+    return data || [];
+  }
 }
 
 async function incrementSearchCount(productId, query) {
