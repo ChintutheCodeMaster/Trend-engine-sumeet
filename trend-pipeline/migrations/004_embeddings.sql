@@ -17,6 +17,8 @@ CREATE OR REPLACE FUNCTION match_products(
   similarity_threshold float DEFAULT 0.78,
   match_count int DEFAULT 1
 )
+
+
 RETURNS TABLE (
   id uuid,
   slug text,
