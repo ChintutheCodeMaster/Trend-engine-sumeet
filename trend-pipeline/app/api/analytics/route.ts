@@ -30,7 +30,7 @@ export async function GET() {
   ] = await Promise.all([
     supabase.from('search_events').select('*', { count: 'exact', head: true }),
     supabase.from('download_events').select('*', { count: 'exact', head: true }),
-    supabase.from('products').select('*', { count: 'exact', head: true }).eq('evergreen', true),
+    supabase.from('products').select('*', { count: 'exact', head: true }).eq('evergreen', true).not('pdf_url', 'is', null),
     supabase.from('search_events').select('searched_at').gte('searched_at', since),
     supabase.from('download_events').select('downloaded_at').gte('downloaded_at', since),
     supabase.from('search_events').select('query').gte('searched_at', since),
