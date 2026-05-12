@@ -20,10 +20,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-// Strips <html>, <head>, <body> wrapper tags so the content can be embedded in
-// the Next.js document. The Tailwind CDN <script> inside the <head> is
-// re-injected manually via a dangerouslySetInnerHTML <script> tag so Tailwind
-// classes still work inside the component tree.
 function extractBody(fullHtml: string): string {
   return fullHtml
     .replace(/<html[^>]*>/gi, '')
@@ -37,13 +33,12 @@ function extractBody(fullHtml: string): string {
 export default async function ProductPage({ params }: { params: { slug: string } }) {
   const { data, error } = await getSupabase()
     .from('products')
-    .select('landing_html, headline, subheadline, keyword, category')
+    .select('landing_html, headline, subheadline, keyword, category, stripe_url, product_title')
     .eq('slug', params.slug)
     .single();
 
   if (error || !data) return notFound();
 
-  // If no full HTML yet (e.g. legacy row), show a simple fallback
   if (!data.landing_html) {
     return (
       <main style={{ background: '#0d0d0d', color: '#f0f0f0', fontFamily: 'sans-serif', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
@@ -54,11 +49,14 @@ export default async function ProductPage({ params }: { params: { slug: string }
     );
   }
 
-  const bodyContent = extractBody(data.landing_html);
+  // Replace the placeholder with the real Stripe URL
+  const stripeUrl = data.stripe_url || '';
+  const bodyContent = extractBody(
+    data.landing_html.replace(/STRIPE_PAYMENT_LINK/g, stripeUrl || '#')
+  );
 
   return (
     <>
-      {/* Tailwind Play CDN — must load before the body HTML runs */}
       {/* eslint-disable-next-line @next/next/no-sync-scripts */}
       <script src="https://cdn.tailwindcss.com" />
 
@@ -67,9 +65,9 @@ export default async function ProductPage({ params }: { params: { slug: string }
         headline={data.headline}
         subheadline={data.subheadline}
         category={data.category}
+        stripeUrl={stripeUrl}
       />
 
-      {/* Extra bottom padding so content isn't hidden behind the bar */}
       <div style={{ paddingBottom: 72 }}>
         <div dangerouslySetInnerHTML={{ __html: bodyContent }} />
       </div>

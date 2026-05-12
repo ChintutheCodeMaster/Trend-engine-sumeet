@@ -40,15 +40,16 @@ async function createStripePrice(stripe, productId) {
   return price;
 }
 
-async function createStripePaymentLink(stripe, priceId) {
+async function createStripePaymentLink(stripe, priceId, slug) {
   console.log(`[stripeAgent] Creating Stripe payment link for price: ${priceId}`);
 
   const paymentLink = await stripe.paymentLinks.create({
     line_items: [{ price: priceId, quantity: 1 }],
+    metadata: { slug },
     after_completion: {
       type: 'hosted_confirmation',
       hosted_confirmation: {
-        custom_message: 'Thank you for your purchase! Your guide download will appear below.'
+        custom_message: 'Thank you for your purchase! Check your email — your download link is on its way.'
       }
     }
   });
@@ -62,10 +63,11 @@ async function createPaymentLink(trend) {
 
   try {
     const stripe = getStripeClient();
+    const slug = trend.slug || trend.keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
 
     const product = await createStripeProduct(stripe, trend);
     const price = await createStripePrice(stripe, product.id);
-    const paymentUrl = await createStripePaymentLink(stripe, price.id);
+    const paymentUrl = await createStripePaymentLink(stripe, price.id, slug);
 
     console.log(`[stripeAgent] Done. Payment URL: ${paymentUrl}`);
     return paymentUrl;
