@@ -6,6 +6,7 @@ const { generateProduct } = require('./agents/productAgent');
 const { createPaymentLink } = require('./agents/stripeAgent');
 const { runOptimization } = require('./agents/optimizationAgent');
 const { buildAndStorePdf } = require('./lib/generatePdf');
+const { createPinsForProduct } = require('./agents/pinterestAgent');
 
 function getSupabase() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
@@ -73,6 +74,15 @@ async function processTrend(trend) {
     console.log(`[orchestrator]   PDF stored.`);
   } catch (pdfErr) {
     console.error(`[orchestrator]   PDF generation failed: ${pdfErr.message}`);
+  }
+
+  // Pin to Pinterest (non-fatal)
+  try {
+    console.log(`[orchestrator]   Creating Pinterest pins for "${slug}"...`);
+    const pins = await createPinsForProduct(trend, landingCopy, slug);
+    if (pins.length > 0) console.log(`[orchestrator]   ${pins.length} pin(s) created.`);
+  } catch (pinErr) {
+    console.error(`[orchestrator]   Pinterest failed: ${pinErr.message}`);
   }
 
   return {

@@ -1,4 +1,4 @@
-// File: /Users/sumeetbhimanpally/Desktop/Trend-Engine/trend-pipeline/app/api/products/route.ts
+// File: /Users/sumeetbhimanpally/Desktop/HYDEN LIB/Trend-Engine/trend-pipeline/app/api/products/route.ts
 import * as entry from '../../../../../app/api/products/route.js'
 import type { NextRequest } from 'next/server.js'
 
