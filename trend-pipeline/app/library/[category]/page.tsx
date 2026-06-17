@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hiddenlibrary.io';
+
+export const revalidate = 3600;
 
 function getSupabase() {
   return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
@@ -27,14 +29,34 @@ type Product = {
   times_found_in_search: number;
 };
 
+export async function generateStaticParams() {
+  return Object.keys(CATEGORY_META).map(category => ({ category }));
+}
+
 export async function generateMetadata(
   { params }: { params: { category: string } }
 ): Promise<Metadata> {
   const meta = CATEGORY_META[params.category];
   if (!meta) return { title: 'Not Found' };
+  const url = `${BASE_URL}/library/${params.category}`;
+  const title = `${meta.label} — Hidden Library`;
+  const description = `${meta.description}. Browse deep-dive PDF guides in the ${meta.label} category.`;
   return {
-    title: `${meta.label} — Hidden Library`,
-    description: meta.description,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: 'Hidden Library',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
   };
 }
 

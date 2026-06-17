@@ -1,9 +1,10 @@
-'use client';
-
 import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import type { Metadata } from 'next';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hiddenlibrary.io';
+
+export const revalidate = 3600;
 
 function getSupabase() {
   return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
@@ -17,17 +18,36 @@ const SEGMENTS = [
   { slug: 'financial-health', label: 'Financial Health',       emoji: '🛡️', description: 'Debt, savings, budgets, credit' },
 ];
 
-export default function LibraryPage() {
-  const [counts, setCounts] = useState<Record<string, number>>({});
+export const metadata: Metadata = {
+  title: 'Browse the Library — Hidden Library',
+  description: 'Browse deep-dive PDF guides on money, business, career, productivity, and financial health. Specific answers to specific questions.',
+  alternates: { canonical: `${BASE_URL}/library` },
+  openGraph: {
+    title: 'Browse the Library — Hidden Library',
+    description: 'Browse deep-dive PDF guides on money, business, career, productivity, and financial health.',
+    url: `${BASE_URL}/library`,
+    siteName: 'Hidden Library',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Browse the Library — Hidden Library',
+    description: 'Browse deep-dive PDF guides on money, business, career, productivity, and financial health.',
+  },
+};
 
-  useEffect(() => {
-    const supabase = getSupabase();
-    supabase.from('products').select('category').eq('evergreen', true).then(({ data }) => {
-      const c: Record<string, number> = {};
-      (data ?? []).forEach((row: { category: string }) => { c[row.category] = (c[row.category] ?? 0) + 1; });
-      setCounts(c);
-    });
-  }, []);
+async function getCategoryCounts(): Promise<Record<string, number>> {
+  const supabase = getSupabase();
+  const { data } = await supabase.from('products').select('category').eq('evergreen', true);
+  const counts: Record<string, number> = {};
+  (data ?? []).forEach((row: { category: string }) => {
+    counts[row.category] = (counts[row.category] ?? 0) + 1;
+  });
+  return counts;
+}
+
+export default async function LibraryPage() {
+  const counts = await getCategoryCounts();
 
   return (
     <main style={{
@@ -74,16 +94,7 @@ export default function LibraryPage() {
                   padding: '28px 24px',
                   cursor: 'pointer',
                   transition: 'border-color 0.2s, transform 0.15s',
-                }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLDivElement).style.borderColor = '#4f46e5';
-                    (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLDivElement).style.borderColor = '#1e1e1e';
-                    (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
-                  }}
-                >
+                }}>
                   <div style={{ fontSize: '2rem', marginBottom: 12 }}>{seg.emoji}</div>
                   <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', marginBottom: 6 }}>
                     {seg.label}
