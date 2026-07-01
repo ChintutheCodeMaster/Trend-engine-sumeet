@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
+    "@google/genai": "^2.10.0",
     "@sparticuz/chromium": "^147.0.0",
     "@supabase/supabase-js": "^2.47.0",
     "dotenv": "^16.4.7",

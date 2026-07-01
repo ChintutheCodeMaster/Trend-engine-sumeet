@@ -3,4 +3,5 @@ node_modules/
 output/
 .env.local
 .env.local.example
+.env.example
 

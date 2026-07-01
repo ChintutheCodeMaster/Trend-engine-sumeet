@@ -7,13 +7,14 @@ const { createPaymentLink } = require('./agents/stripeAgent');
 const { runOptimization } = require('./agents/optimizationAgent');
 const { buildAndStorePdf } = require('./lib/generatePdf');
 const { createPinsForProduct } = require('./agents/pinterestAgent');
+const { generateThumbnail } = require('./agents/thumbnailAgent');
 
 function getSupabase() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
   return createClient(process.env.SUPABASE_URL, key);
 }
 
-async function saveToSupabase(trend, landingCopy, productResult, stripeUrl) {
+async function saveToSupabase(trend, landingCopy, productResult, stripeUrl, coverImageUrl) {
   const supabase = getSupabase();
   const slug = trend.slug || trend.keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
@@ -36,6 +37,7 @@ async function saveToSupabase(trend, landingCopy, productResult, stripeUrl) {
       product_title: productResult.title,
       product_html: productResult.html,
       stripe_url: stripeUrl,
+      cover_image_url: coverImageUrl,
       // Hidden Library fields
       evergreen: true,
       content_type: 'longtail',
@@ -65,7 +67,28 @@ async function processTrend(trend) {
   } else {
     console.log(`[orchestrator]   Stripe key not set — skipping payment link.`);
   }
-  const slug = await saveToSupabase(trend, landingCopy, productResult, stripeUrl);
+
+  // Provisional slug (matches what saveToSupabase computes) — needed by thumbnailAgent for the storage path
+  const provisionalSlug = trend.slug || trend.keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+  // AI-generated cover image (non-fatal — falls back to gradient div if it fails or key missing)
+  let coverImageUrl = null;
+  try {
+    const cover = await generateThumbnail({
+      slug: provisionalSlug,
+      trend,
+      productSkeleton: {
+        title:            productResult.title,
+        subtitle:         productResult.subtitle,
+        executiveSummary: productResult.executiveSummary,
+      },
+    });
+    coverImageUrl = cover?.publicUrl ?? null;
+  } catch (coverErr) {
+    console.error(`[orchestrator]   Cover generation failed: ${coverErr.message}`);
+  }
+
+  const slug = await saveToSupabase(trend, landingCopy, productResult, stripeUrl, coverImageUrl);
 
   // Generate and store PDF
   try {

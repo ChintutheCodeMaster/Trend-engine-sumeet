@@ -57,8 +57,8 @@ Return ONLY valid JSON, no markdown, no code fences:
 chapterTitles must have exactly 8 items. resources must have exactly 7 items. Be specific to "${trend.keyword}".`;
 
   const msg = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1200,
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2500,
     messages: [{ role: 'user', content: prompt }],
   });
 
@@ -82,8 +82,8 @@ Return ONLY valid JSON, no markdown, no code fences:
 }`;
 
   const msg = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1500,
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2500,
     messages: [{ role: 'user', content: prompt }],
   });
 
@@ -387,7 +387,12 @@ async function generateProduct(trend) {
   console.log(`[productAgent] Done. Title: "${product.title}"`);
 
   const html = buildProductHTML(product);
-  return { title: product.title, html };
+  return {
+    title: product.title,
+    subtitle: product.subtitle,
+    executiveSummary: product.executiveSummary,
+    html,
+  };
 }
 
 module.exports = { generateProduct };

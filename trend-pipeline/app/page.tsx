@@ -13,6 +13,7 @@ type Book = {
   accent: string;
   pattern: string;
   desc: string;
+  coverImageUrl?: string | null;
 };
 
 const CATEGORY_THEMES: Record<string, { bg: string; accent: string; pattern: string; label: string }> = {
@@ -24,7 +25,7 @@ const CATEGORY_THEMES: Record<string, { bg: string; accent: string; pattern: str
 };
 const DEFAULT_THEME = { bg: 'linear-gradient(145deg,#1a1a2e,#16213e)', accent: '#818cf8', pattern: '◇', label: 'General' };
 
-function dbProductToBook(p: { slug: string; keyword: string; category: string; headline?: string; subheadline?: string }): Book {
+function dbProductToBook(p: { slug: string; keyword: string; category: string; headline?: string; subheadline?: string; cover_image_url?: string | null }): Book {
   const theme = CATEGORY_THEMES[p.category] ?? DEFAULT_THEME;
   return {
     slug: p.slug,
@@ -35,6 +36,7 @@ function dbProductToBook(p: { slug: string; keyword: string; category: string; h
     accent: theme.accent,
     pattern: theme.pattern,
     desc: p.subheadline || '',
+    coverImageUrl: p.cover_image_url ?? null,
   };
 }
 
@@ -46,6 +48,7 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
   const opacity = Math.max(0.1, 1 - abs * 0.23);
   const zIndex = Math.round(20 - abs * 5);
   const isCenter = abs < 0.5;
+  const hasCover = !!book.coverImageUrl;
 
   return (
     <div onClick={isCenter ? onClick : undefined} style={{
@@ -68,21 +71,48 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
       padding: '20px 18px 16px',
       overflow: 'hidden',
     }}>
-      {/* Background pattern */}
-      <div style={{
-        position: 'absolute', top: -30, right: -25,
-        fontSize: '160px', opacity: 0.07, color: '#fff',
-        lineHeight: 1, pointerEvents: 'none', userSelect: 'none',
-      }}>
-        {book.pattern}
-      </div>
-      <div style={{
-        position: 'absolute', bottom: 50, left: -15,
-        fontSize: '100px', opacity: 0.04, color: '#fff',
-        lineHeight: 1, pointerEvents: 'none', userSelect: 'none',
-      }}>
-        {book.pattern}
-      </div>
+      {/* AI-generated cover image (fills card) */}
+      {hasCover && (
+        <>
+          <img
+            src={book.coverImageUrl!}
+            alt={book.title}
+            style={{
+              position: 'absolute', inset: 0,
+              width: '100%', height: '100%',
+              objectFit: 'cover',
+              pointerEvents: 'none',
+              userSelect: 'none',
+            }}
+          />
+          {/* Dark bottom gradient for title legibility */}
+          <div style={{
+            position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)',
+            pointerEvents: 'none',
+          }} />
+        </>
+      )}
+
+      {/* Background pattern (only when no AI cover) */}
+      {!hasCover && (
+        <>
+          <div style={{
+            position: 'absolute', top: -30, right: -25,
+            fontSize: '160px', opacity: 0.07, color: '#fff',
+            lineHeight: 1, pointerEvents: 'none', userSelect: 'none',
+          }}>
+            {book.pattern}
+          </div>
+          <div style={{
+            position: 'absolute', bottom: 50, left: -15,
+            fontSize: '100px', opacity: 0.04, color: '#fff',
+            lineHeight: 1, pointerEvents: 'none', userSelect: 'none',
+          }}>
+            {book.pattern}
+          </div>
+        </>
+      )}
 
       {/* Top: category badge */}
       <div style={{
@@ -728,41 +758,76 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
             justifyContent: 'center',
           }}
         >
-          {/* Overlay strip */}
-          <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: 12,
-              background: 'rgba(0,0,0,0.35)',
-            }}
-          />
+          {book.coverImageUrl ? (
+            <>
+              <img
+                src={book.coverImageUrl}
+                alt={book.title}
+                style={{
+                  position: 'absolute', inset: 0,
+                  width: '100%', height: '100%',
+                  objectFit: 'cover',
+                  pointerEvents: 'none',
+                  userSelect: 'none',
+                }}
+              />
+              {/* Bottom gradient for label/title legibility */}
+              <div style={{
+                position: 'absolute', left: 0, right: 0, bottom: 0, height: '50%',
+                background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0) 100%)',
+                pointerEvents: 'none',
+              }} />
+              <div style={{
+                position: 'absolute', left: 0, right: 0, bottom: 24,
+                textAlign: 'center', padding: '0 24px', zIndex: 1,
+              }}>
+                <div style={{ color: book.accent, fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>
+                  {book.label} · Hidden Library
+                </div>
+                <p style={{ color: '#fff', fontWeight: 800, fontSize: '1.05rem', lineHeight: 1.4, textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>
+                  {book.title}
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Overlay strip */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 12,
+                  background: 'rgba(0,0,0,0.35)',
+                }}
+              />
 
-          {/* Pattern */}
-          <div
-            style={{
-              position: 'absolute',
-              top: -10,
-              right: -10,
-              fontSize: 160,
-              opacity: 0.06,
-              color: '#fff',
-              pointerEvents: 'none',
-            }}
-          >
-            {book.pattern}
-          </div>
+              {/* Pattern */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: -10,
+                  right: -10,
+                  fontSize: 160,
+                  opacity: 0.06,
+                  color: '#fff',
+                  pointerEvents: 'none',
+                }}
+              >
+                {book.pattern}
+              </div>
 
-          <div style={{ textAlign: 'center', padding: '0 32px', zIndex: 1 }}>
-            <div style={{ color: book.accent, fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 10 }}>
-              {book.label} · Hidden Library
-            </div>
-            <p style={{ color: '#fff', fontWeight: 800, fontSize: '1.1rem', lineHeight: 1.4 }}>
-              {book.title}
-            </p>
-          </div>
+              <div style={{ textAlign: 'center', padding: '0 32px', zIndex: 1 }}>
+                <div style={{ color: book.accent, fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 10 }}>
+                  {book.label} · Hidden Library
+                </div>
+                <p style={{ color: '#fff', fontWeight: 800, fontSize: '1.1rem', lineHeight: 1.4 }}>
+                  {book.title}
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* ── RIGHT: Content ── */}

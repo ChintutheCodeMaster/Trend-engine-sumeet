@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from('products')
-    .select('id, slug, keyword, category, score, headline, subheadline, stripe_url, pdf_url, created_at')
+    .select('id, slug, keyword, category, score, headline, subheadline, stripe_url, pdf_url, cover_image_url, created_at')
     .not('pdf_url', 'is', null)
     .order('created_at', { ascending: false });
 

@@ -120,6 +120,31 @@ async function runBuild(jobId: string, userQuery: string) {
 
   console.log(`[build] Phase 1 complete. slug="${slug}"`);
 
+  // ── Thumbnail: kick off in parallel with Phase 2 (non-fatal, never blocks) ──
+  const thumbnailPromise = (async () => {
+    if (!process.env.GEMINI_API_KEY) {
+      console.log(`[build] GEMINI_API_KEY not set — skipping cover image.`);
+      return;
+    }
+    try {
+      const { generateThumbnail } = require('../../../../agents/thumbnailAgent');
+      const cover = await generateThumbnail({
+        slug,
+        trend,
+        productSkeleton: {
+          title:    landingCopy.headline,
+          subtitle: landingCopy.subheadline,
+        },
+      });
+      if (cover?.publicUrl) {
+        await supabase.from('products').update({ cover_image_url: cover.publicUrl }).eq('slug', slug);
+        console.log(`[build] Cover image saved for "${slug}".`);
+      }
+    } catch (coverErr: any) {
+      console.error(`[build] Thumbnail failed: ${coverErr.message}`);
+    }
+  })();
+
   // ── Phase 2: Product guide + Stripe ──────────────────────────────────────
   console.log(`[build] Phase 2: generating product guide...`);
   try {
@@ -162,6 +187,10 @@ async function runBuild(jobId: string, userQuery: string) {
       .eq('id', jobId);
     console.log(`[build] Marked ready anyway — landing page for "${slug}" is live.`);
   }
+
+  // Wait for the parallel thumbnail job before letting the function exit
+  // (otherwise Vercel kills the in-flight Gemini call + Supabase upload).
+  await thumbnailPromise;
 }
 
 export async function POST(
