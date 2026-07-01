@@ -1,12 +1,15 @@
 require('dotenv').config();
 const Anthropic = require('@anthropic-ai/sdk');
-const { GoogleGenAI } = require('@google/genai');
+// const { GoogleGenAI } = require('@google/genai');
 const { createClient } = require('@supabase/supabase-js');
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 60_000 });
-const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-const IMAGE_MODEL = 'gemini-2.5-flash-image';
+// const IMAGE_MODEL = 'gemini-2.5-flash-image';
+const HIGGSFIELD_ENDPOINT = 'https://platform.higgsfield.ai/v1/text2image/soul';
+const HIGGSFIELD_POLL_INTERVAL_MS = 3000;
+const HIGGSFIELD_MAX_POLL_ATTEMPTS = 60;
 const STORAGE_BUCKET = 'product-covers';
 
 // Editorial-muted palette. One accent per vertical. Background is a soft, flat field.
@@ -64,7 +67,7 @@ Reply with the phrase only.`;
   return phrase;
 }
 
-// ── Step 2: Build the Gemini image prompt around that noun phrase + palette ──
+// ── Step 2: Build the image-model prompt around that noun phrase + palette ──
 function buildImagePrompt(subject, palette) {
   return `Minimalist editorial book cover illustration. Subject: ${subject}.
 Rendered in soft matte 3D clay style with gentle volume and a single soft directional studio light from the upper left, casting a long quiet shadow.
@@ -74,27 +77,103 @@ No text, no letters, no numbers, no logos, no watermarks, no people, no faces, n
 Portrait orientation, 3:4 aspect ratio.`;
 }
 
-// ── Step 3: Call Gemini and pull the base64 image out of the response ──
+// ── Step 3 (LEGACY — Gemini via @google/genai SDK): kept for reference. ──
+// async function generateImageBuffer(prompt) {
+//   const response = await genai.models.generateContent({
+//     model: IMAGE_MODEL,
+//     contents: prompt,
+//     config: {
+//       responseModalities: ['IMAGE'],
+//       imageConfig: { aspectRatio: '3:4' },
+//     },
+//   });
+//
+//   const parts = response?.candidates?.[0]?.content?.parts || [];
+//   const imagePart = parts.find(p => p.inlineData?.data);
+//   if (!imagePart) {
+//     const textPart = parts.find(p => p.text)?.text;
+//     throw new Error(`No image returned from ${IMAGE_MODEL}${textPart ? ` — model said: ${textPart.slice(0, 200)}` : ''}`);
+//   }
+//
+//   return {
+//     buffer: Buffer.from(imagePart.inlineData.data, 'base64'),
+//     mimeType: imagePart.inlineData.mimeType || 'image/png',
+//   };
+// }
+
+// ── Step 3: Call Higgsfield text2image/soul, poll the job, download the image ──
 async function generateImageBuffer(prompt) {
-  const response = await genai.models.generateContent({
-    model: IMAGE_MODEL,
-    contents: prompt,
-    config: {
-      responseModalities: ['IMAGE'],
-      imageConfig: { aspectRatio: '3:4' },
-    },
+  const headers = {
+    'hf-api-key': process.env.HIGGSFIELD_API_KEY,
+    'hf-secret':  process.env.HIGGSFIELD_API_SECRET,
+    'Content-Type': 'application/json',
+  };
+
+  const submitRes = await fetch(HIGGSFIELD_ENDPOINT, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      params: {
+        prompt,
+        quality: '720p',
+        batch_size: 1,
+        enhance_prompt: true,
+        style_strength: 1,
+        width_and_height: '1536x1536',
+      },
+      webhook: null,
+    }),
   });
 
-  const parts = response?.candidates?.[0]?.content?.parts || [];
-  const imagePart = parts.find(p => p.inlineData?.data);
-  if (!imagePart) {
-    const textPart = parts.find(p => p.text)?.text;
-    throw new Error(`No image returned from ${IMAGE_MODEL}${textPart ? ` — model said: ${textPart.slice(0, 200)}` : ''}`);
+  if (!submitRes.ok) {
+    const errText = await submitRes.text().catch(() => '');
+    throw new Error(`Higgsfield submit failed (${submitRes.status}): ${errText.slice(0, 300)}`);
   }
 
+  const submitBody = await submitRes.json();
+  const jobSetId = submitBody?.id || submitBody?.job_set_id || submitBody?.jobSetId;
+  if (!jobSetId) {
+    throw new Error(`Higgsfield submit returned no job id: ${JSON.stringify(submitBody).slice(0, 300)}`);
+  }
+
+  let imageUrl = null;
+  for (let attempt = 0; attempt < HIGGSFIELD_MAX_POLL_ATTEMPTS; attempt++) {
+    await new Promise(r => setTimeout(r, HIGGSFIELD_POLL_INTERVAL_MS));
+
+    const statusRes = await fetch(`https://platform.higgsfield.ai/v1/job-sets/${jobSetId}`, { headers });
+    if (!statusRes.ok) continue;
+
+    const statusBody = await statusRes.json();
+    const jobs = statusBody?.jobs || [];
+    const job = jobs[0];
+    const state = job?.status || statusBody?.status;
+
+    if (state === 'completed' || state === 'succeeded' || state === 'success') {
+      imageUrl =
+        job?.results?.raw?.url ||
+        job?.results?.min?.url ||
+        job?.result?.url ||
+        job?.results?.[0]?.url ||
+        statusBody?.results?.[0]?.url;
+      if (imageUrl) break;
+    }
+
+    if (state === 'failed' || state === 'error') {
+      throw new Error(`Higgsfield job failed: ${JSON.stringify(job || statusBody).slice(0, 300)}`);
+    }
+  }
+
+  if (!imageUrl) {
+    throw new Error(`Higgsfield job ${jobSetId} did not return an image url in time.`);
+  }
+
+  const imgRes = await fetch(imageUrl);
+  if (!imgRes.ok) throw new Error(`Failed to download Higgsfield image (${imgRes.status}).`);
+  const arrayBuf = await imgRes.arrayBuffer();
+
   return {
-    buffer: Buffer.from(imagePart.inlineData.data, 'base64'),
-    mimeType: imagePart.inlineData.mimeType || 'image/png',
+    buffer: Buffer.from(arrayBuf),
+    mimeType: imgRes.headers.get('content-type') || 'image/png',
   };
 }
 
@@ -116,8 +195,8 @@ async function uploadCover(buffer, mimeType, slug) {
 
 // ── Public entry point ────────────────────────────────────────────────────────
 async function generateThumbnail({ slug, trend, productSkeleton = {} }) {
-  if (!process.env.GEMINI_API_KEY) {
-    console.log('[thumbnailAgent] GEMINI_API_KEY not set — skipping cover generation.');
+  if (!process.env.HIGGSFIELD_API_KEY || !process.env.HIGGSFIELD_API_SECRET) {
+    console.log('[thumbnailAgent] HIGGSFIELD_API_KEY / HIGGSFIELD_API_SECRET not set — skipping cover generation.');
     return null;
   }
 
