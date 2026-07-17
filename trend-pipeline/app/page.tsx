@@ -558,6 +558,7 @@ export default function Home() {
         {[
           { href: '/vault',        label: 'The Vault' },
           { href: '/library',      label: 'Library' },
+          { href: '/blog',         label: 'Blog' },
           { href: '/search',       label: 'Search' },
           { href: '/api/products', label: 'API' },
           // { href: '/analytics',    label: 'Analytics' },
