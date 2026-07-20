@@ -5,3 +5,7 @@ output/
 .env.local.example
 .env.example
 
+# Next.js build output
+.next/
+out/
+
