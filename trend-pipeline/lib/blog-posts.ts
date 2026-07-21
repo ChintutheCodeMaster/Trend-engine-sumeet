@@ -24,6 +24,123 @@ export type BlogBlock =
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'emergency-fund-actual-number-2026',
+    title: 'The 3-Month Emergency Fund Rule Is Broken. Here Is the Number That Actually Works.',
+    excerpt:
+      'The "3-6 months of expenses" rule was invented in a job market that no longer exists. Here is the honest math for how much cash you actually need parked in 2026 — and where to keep it so inflation does not quietly eat it.',
+    category: 'financial-health',
+    author: 'Hidden Library',
+    publishedAt: '2026-07-21',
+    readingMinutes: 8,
+    productSlug: 'how-to-build-an-emergency-fund-that-actually-works',
+    productTitle: 'How to Build an Emergency Fund That Actually Works',
+    content: [
+      {
+        type: 'p',
+        text:
+          'Open any personal finance book written before 2015 and you will find the same sentence: "save three to six months of expenses in an emergency fund." It is repeated so often it has become invisible — a piece of financial wallpaper nobody questions. It is also based on assumptions about the job market, layoffs, and interest rates that stopped being true about a decade ago.',
+      },
+      {
+        type: 'p',
+        text:
+          'This post is the honest re-derivation. What the number should be in 2026, why the old rule under-shoots for most people and over-shoots for a few, and where to actually park the money so it earns something instead of quietly losing 3% a year to inflation.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Where the "3-6 month" rule came from' },
+      {
+        type: 'p',
+        text:
+          'The rule traces back to Bureau of Labor Statistics data from the 1990s and early 2000s, when the average duration of unemployment for a laid-off worker was roughly 12-16 weeks. Three months of expenses got the average person to a new job. Six months covered the unlucky quartile. It was a defensible rule of thumb for its time.',
+      },
+      {
+        type: 'p',
+        text:
+          'The average duration of unemployment in the United States in 2025 was 22.9 weeks — over five months — and for workers over 45 or in senior roles it climbed past 30 weeks. The old rule now covers roughly the median outcome and completely fails the tail. That tail is where the financial ruin actually happens.',
+      },
+      { type: 'h2', text: 'The four inputs that actually decide your number' },
+      {
+        type: 'ol',
+        items: [
+          'Household job count — one income or two? A two-earner household can rebuild from a single job loss much faster; a solo earner needs a bigger cushion.',
+          'Income volatility — a salaried W-2 role at a stable company is not the same risk profile as freelance, commissioned, or founder income. Volatile earners need more.',
+          'Fixed vs. flexible expenses — a household where 80% of spending is rent, insurance, and debt service cannot cut fast in a crisis. High-fixed-cost lives need more months of runway.',
+          'Insurance stack — good short-term disability and unemployment coverage lets you carry a smaller cash cushion. No coverage means the cushion is the coverage.',
+        ],
+      },
+      {
+        type: 'callout',
+        title: 'The real number, in one sentence',
+        text:
+          'Take your monthly essential expenses (not lifestyle spend — housing, utilities, food, insurance, debt minimums, transportation), multiply by 6 for a dual-income household with stable jobs, by 9 for a solo earner or a volatile-income household, and by 12 for anyone who is both. That is your target.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Where to actually keep it (this is where most people bleed money)' },
+      {
+        type: 'p',
+        text:
+          'The classic advice is "keep it in a savings account so you can access it fast." In 2015, when the average savings account paid 0.06%, this cost you almost nothing. In 2026, with high-yield savings and Treasury bill yields sitting between 4-5%, keeping your emergency fund in a Big-4 bank checking account is voluntarily setting fire to $2,000-$4,000 a year on a $50,000 fund.',
+      },
+      { type: 'h3', text: 'The tier system that actually works' },
+      {
+        type: 'ul',
+        items: [
+          'Tier 1 — first month of expenses in a high-yield savings account at an FDIC-insured online bank (Ally, Marcus, SoFi, Wealthfront Cash). Instant access, ~4.3% APY as of mid-2026.',
+          'Tier 2 — months 2 through 4 in a Treasury bill ladder (4-week and 8-week T-bills, rolled). State-tax-exempt, ~4.8% yield, accessible within days.',
+          'Tier 3 — months 5+ in a mix of I-bonds (up to $10k/year per person) and slightly longer T-bills (13-week, 26-week). Highest yield, slowest to reach, but you almost never need this layer immediately.',
+        ],
+      },
+      {
+        type: 'quote',
+        text:
+          '"Liquidity is a spectrum, not a switch. Match the layer of your emergency fund to the speed at which you actually need each dollar."',
+        cite: 'Every fee-only financial planner on the planet',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The three common ways this goes wrong' },
+      { type: 'h3', text: '1. The "I invested it" trap' },
+      {
+        type: 'p',
+        text:
+          'People bored by 4% yields put their emergency fund in an S&P 500 ETF. The math works right up until the market drops 30% the same quarter you lose your job — which is not a coincidence, because recessions cause both. Emergency funds are not an investment. They are insurance you pay for with foregone return.',
+      },
+      { type: 'h3', text: '2. The "I have a credit card" trap' },
+      {
+        type: 'p',
+        text:
+          'A credit card is not an emergency fund. It is a bridge to one. Using it as a substitute means paying 24-29% APR on a balance you accumulated during the worst possible cash-flow month of your life. This is how six-month setbacks become five-year debt spirals.',
+      },
+      { type: 'h3', text: '3. The "it is too much dead money" trap' },
+      {
+        type: 'p',
+        text:
+          'Founders and high earners are the worst offenders here — they hate seeing $80,000 "doing nothing" and route it into the business or into private investments. Then a customer contract falls through, a lawsuit lands, or a health issue takes them offline for three months, and the whole structure collapses because there is no cushion. The emergency fund is not dead money. It is the thing that lets everything else you do stay alive.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The playbook — what to actually do this week' },
+      {
+        type: 'ol',
+        items: [
+          'Pull three months of bank and card statements. Add up ONLY the essential expenses (housing, utilities, insurance, groceries, transportation, debt minimums, childcare). Ignore travel, dining, subscriptions you could cancel. That number is your monthly essential burn.',
+          'Multiply by your risk factor (6, 9, or 12 based on the criteria above). That is your target fund size.',
+          'Open a high-yield savings account today if you do not have one — Ally, Marcus, SoFi, Wealthfront all take under 10 minutes. Move at least one month of expenses in immediately.',
+          'Set up an automatic weekly transfer of a fixed amount from checking to that account until you hit the first tier. Then start the T-bill ladder for tier 2.',
+          'Once fully funded — leave it alone. Rebalance quarterly. The point of the fund is to be boring.',
+        ],
+      },
+      {
+        type: 'p',
+        text:
+          'If you already read our companion post on paying yourself from an LLC, this is the next lever. You cannot build a resilient personal balance sheet on top of an income stream that is not properly paying you first.',
+      },
+      {
+        type: 'callout',
+        title: 'Run your exact number, not the boilerplate one',
+        text:
+          'The full guide includes the essential-expenses calculator, the tiered-account setup walkthrough with account picks by state, a T-bill ladder template you can plug your numbers into, and the exact rebalance schedule. One-time $10, instant PDF, keep forever.',
+      },
+    ],
+  },
+  {
     slug: 'when-does-s-corp-actually-save-money',
     title: 'The $12,000 Question: When Does Electing S-Corp Actually Save You Money?',
     excerpt:
