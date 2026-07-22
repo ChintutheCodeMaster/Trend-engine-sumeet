@@ -24,138 +24,172 @@ export type BlogBlock =
 
 export const BLOG_POSTS: BlogPost[] = [
   {
-    slug: 'internal-promotion-trap-job-hop-math',
-    title: 'The Internal Promotion Trap: Why Loyal Employees Are Quietly the Lowest-Paid People in the Building',
+    slug: 'ats-resume-fix-2026',
+    title: 'Your Resume Is Getting Rejected Before a Human Ever Sees It. Here Is the 20-Minute Fix.',
     excerpt:
-      'The "stay and get promoted" story is comforting, but the payroll data does not support it. Here is the honest math on why the same job pays 20% more with a new logo on the offer letter — and the exact job-hop cadence that maximizes lifetime income without burning your reputation.',
+      'Roughly 75% of resumes submitted online are filtered out by software before a recruiter ever opens them. It is almost never about your qualifications — it is about formatting choices that quietly break the parser. Here is the honest field guide to getting past the ATS in one afternoon.',
     category: 'career',
     author: 'Hidden Library',
     publishedAt: '2026-07-22',
-    readingMinutes: 8,
-    productSlug: 'when-to-job-hop-vs-stay-put',
-    productTitle: 'When to Job-Hop vs. Stay Put — The Career-Move Playbook',
+    readingMinutes: 7,
+    productSlug: 'ats-proof-resume-playbook',
+    productTitle: 'The ATS-Proof Resume Playbook — Field Guide for 2026',
     content: [
       {
         type: 'p',
         text:
-          'There is a story the corporate world tells everyone who joins it. Work hard, keep your head down, be patient, and the company will take care of you. In three years you will be promoted. In five you will be a manager. In ten you will be senior. It is a comforting story. It is also, according to two decades of Bureau of Labor Statistics and ADP payroll data, quietly one of the most expensive stories you can believe.',
+          'If you have applied to more than a handful of roles in the last two years and heard silence back, there is a very good chance the reason has nothing to do with your qualifications, your career story, or the words you agonized over in your summary paragraph. It is far more likely that a piece of software — an applicant tracking system, or ATS — quietly scored your resume, filed it below a threshold, and closed the file before a human ever looked at it.',
       },
       {
         type: 'p',
         text:
-          'This post is the honest re-derivation. Why the internal promotion track under-pays, what the actual delta is in dollars, and the job-hop cadence that maximizes lifetime income without turning your resume into a red flag.',
+          'The good news: the fixes are mechanical, boring, and take less than an afternoon. The bad news: almost every "clever" formatting choice modern resume templates encourage is exactly the thing tripping the parser.',
       },
       { type: 'divider' },
-      { type: 'h2', text: 'The number nobody wants to say out loud' },
+      { type: 'h2', text: 'What an ATS actually does' },
       {
         type: 'p',
         text:
-          'ADP has been publishing the "Pay Insights" report every month for years. It compares wage growth for job-stayers (people who kept the same employer year over year) against job-changers (people who switched employers in that window). The numbers move a little quarter to quarter, but the direction never changes.',
+          'When you upload a PDF or Word doc through a company careers portal, three things happen in quick succession. First, the file is parsed — the software tries to read your document as structured text and split it into predictable sections (contact, experience, education, skills). Second, it runs a keyword match against the job description. Third, it assigns a score and sorts you into a queue. If your parser output is garbled, the score is meaningless. If the score is low, a human never sees the file at all.',
       },
       {
         type: 'ul',
         items: [
-          'Job-stayers: average annual raise of 4.1% in 2025, 3.6% by mid-2026.',
-          'Job-changers: average annual raise of 7.2% in 2025, and still 6.4% by mid-2026 — even in a cooling market.',
-          'Gap: 2.5–3 percentage points. Compounded across a career, that is roughly $340,000 in lifetime earnings on a $75k starting salary.',
+          'Workday, Greenhouse, Lever, iCIMS, and Taleo cover roughly 80% of enterprise hiring in 2026.',
+          'The parse step is where most resumes die — not the keyword step.',
+          'Recruiters at most large companies never open resumes below a configurable score threshold. The default is usually around 60%.',
         ],
       },
       {
         type: 'callout',
         title: 'The uncomfortable framing',
         text:
-          'Your employer knows exactly what they would have to pay to hire your replacement from the outside. They also know exactly what they have to pay to keep you. Those are almost never the same number — and internal raise budgets are built around the second one, not the first.',
+          'This is not a hiring decision. It is a filing decision. Getting past the ATS is not the same as being a strong candidate — it is the ticket that lets your strong candidacy actually be seen. Skip it and none of the rest matters.',
       },
       { type: 'divider' },
-      { type: 'h2', text: 'Why the internal ladder is structurally under-paid' },
-      { type: 'h3', text: '1. Merit-increase budgets are set at the top, not by role' },
+      { type: 'h2', text: 'The nine formatting choices that quietly break the parser' },
+      { type: 'h3', text: '1. Multi-column layouts' },
       {
         type: 'p',
         text:
-          'Every large company sets a company-wide merit budget once a year — usually a single percentage number handed down from finance to HR. In 2026 that number is sitting around 3.5–4%. It applies to almost everyone. It has almost nothing to do with what the outside market is paying for your specific skill. Your raise reflects the company\'s cost discipline, not your market value.',
+          'Beautiful two-column resumes with a sidebar for skills are the single most common parser-breaker. The ATS reads left to right, top to bottom, and treats a sidebar as one continuous stream. Your "Senior Engineer, 2019–2022" ends up glued to "React, Node, Postgres" in a way no human would ever write. Use a single-column layout.',
       },
-      { type: 'h3', text: '2. Promotions come with compression discounts' },
+      { type: 'h3', text: '2. Text inside images or graphics' },
       {
         type: 'p',
         text:
-          'When you get promoted internally, HR benchmarks the new title against the bottom of that role\'s pay band — usually the 25th to 40th percentile. When someone external is hired into the same title, they get benchmarked to the middle or top of the band. Same job, same title, two very different starting numbers. This is called pay compression, and it is not an accident.',
+          'If your name, title, or contact info sits inside a designed header image, it is invisible to the ATS. Same for any skill "rating bars" rendered as graphics. The parser only reads real text.',
       },
-      { type: 'h3', text: '3. Your baseline follows you forever' },
+      { type: 'h3', text: '3. Headers and footers' },
       {
         type: 'p',
         text:
-          'A 4% raise on a low base for four years in a row leaves you meaningfully behind a peer who got a 20% bump once, even if their next three years are flat. Compounding is a floor, not a ladder — and the internal ladder starts you a floor lower than the external one.',
+          'A surprising number of ATS parsers ignore anything in the Word header or footer. Put your name, phone, and email in the body of the document, at the top — never in a header.',
+      },
+      { type: 'h3', text: '4. Uncommon section titles' },
+      {
+        type: 'p',
+        text:
+          'Clever headers like "My Journey" or "What I Bring" confuse the parser. Boring wins: "Experience," "Education," "Skills," "Certifications." Every parser is trained to recognize these exact strings.',
+      },
+      { type: 'h3', text: '5. Tables for experience layout' },
+      {
+        type: 'p',
+        text:
+          'Tables read out of order. Dates on the left, role on the right, description below — the parser has no idea which row goes with which role. Use plain line-by-line formatting.',
+      },
+      { type: 'h3', text: '6. Fancy fonts and text boxes' },
+      {
+        type: 'p',
+        text:
+          'Stick to Arial, Calibri, Helvetica, Georgia, or Times New Roman. Anything more exotic risks being rendered as gibberish. Text boxes are worse than tables — the parser often skips them entirely.',
+      },
+      { type: 'h3', text: '7. Dates in inconsistent formats' },
+      {
+        type: 'p',
+        text:
+          'The parser is trying to calculate your total years of experience. "Mar 2021 – Present" in one role and "5/2018-2020" in another confuses the math. Pick one format and use it everywhere. "MM/YYYY – MM/YYYY" is safest.',
+      },
+      { type: 'h3', text: '8. Missing keywords from the job description' },
+      {
+        type: 'p',
+        text:
+          'The keyword match is dumb but literal. If the JD says "project management" ten times and your resume says "PM," you are getting filtered out. Read the JD, extract the exact language, and mirror it back where it is honestly true of you. Do not invent — but do not paraphrase for style.',
+      },
+      { type: 'h3', text: '9. Submitting a PDF when Word is asked for' },
+      {
+        type: 'p',
+        text:
+          'Some older ATS installations still parse .docx more reliably than PDF. If the portal asks for Word, upload Word. If it accepts either, PDF made from a clean single-column .docx is usually safest.',
       },
       {
         type: 'quote',
         text:
-          '"The market pays for the value of the work. Your employer pays for the cost of losing you. If those two numbers diverge and you never leave, you never find out by how much."',
-        cite: 'A retired VP of Compensation, off the record',
+          '"A great resume that the parser cannot read is worth less than an average resume it can. The formatting is the qualification — before the qualification."',
+        cite: 'Every technical recruiter, quietly',
       },
       { type: 'divider' },
-      { type: 'h2', text: 'The cadence that actually works' },
-      {
-        type: 'p',
-        text:
-          'The mistake most people make is not staying too long — it is hopping too often. Under two years and the pattern reads as "cannot ship anything meaningful" to a hiring manager. Over four years in the same seat and the compounding starts working against you. The sweet spot has held remarkably steady in exit-interview data across industries:',
-      },
+      { type: 'h2', text: 'The 20-minute audit anyone can run' },
       {
         type: 'ol',
         items: [
-          'Year 1 — you are learning. The move you made to get here is your leverage. Do not move again.',
-          'Year 2 — you are shipping. Start noticing what parts of the job are portable — the outcomes, not the process — and start writing them down for future interview stories.',
-          'Year 3 — you are senior. Have a real conversation with your manager about the next level. Get a specific yes/no on timeline and pay. If the answer is soft, start looking.',
-          'Year 4 — either you have been promoted at market rate or you have an offer letter in the other hand. There is very rarely a good reason to stay flat past year 4 in the same role.',
+          'Open your resume. Save a copy called resume_ats.docx and work in that copy.',
+          'Convert it to a clean single-column layout. Delete every sidebar, table, and text box.',
+          'Move all contact info into the top of the document body, not the header.',
+          'Rename every section to a standard string: Summary, Experience, Skills, Education, Certifications.',
+          'Standardize every date to MM/YYYY – MM/YYYY. Use "Present" only for the current role.',
+          'Open the job description. Copy the top ten nouns and verbs you actually match. Weave them into your bullets where they are truthful.',
+          'Save as PDF. Open the PDF. Select all, copy, paste into a plain text editor. If it reads as a coherent top-to-bottom document, the parser will read it the same way. If it does not, you have found the exact section to fix.',
         ],
       },
       {
         type: 'callout',
-        title: 'The counterexample everyone forgets',
+        title: 'The trick that catches almost everything',
         text:
-          'This math flips inside high-growth companies where equity is meaningful and vesting is real. If you have four-year cliff-vesting stock at a company that is still compounding, staying is the move. But this is the exception, not the rule — most companies do not fit this profile, and most people overestimate how much their equity is worth.',
+          'The copy-paste-into-plain-text test is the single highest-leverage thing on this list. It shows you exactly what the parser sees. If a section comes out garbled, no amount of clever writing above it will save you.',
       },
       { type: 'divider' },
-      { type: 'h2', text: 'The three ways people burn the job-hop advantage' },
-      { type: 'h3', text: '1. The "any offer is a good offer" trap' },
+      { type: 'h2', text: 'The mistakes to avoid on the way out' },
+      { type: 'h3', text: 'Do not stuff keywords in white text' },
       {
         type: 'p',
         text:
-          'People treat every recruiter email as an option and every offer as validation. It is not. A 12% raise into a role at a company that will lay you off in nine months is worse than staying put with a 4% raise. Job-hopping is a compounding strategy — it only works if each move is real.',
+          'The internet\'s favorite ATS hack — invisible white keywords hidden in the margins — was patched years ago. Modern parsers strip color out before scoring. All you achieve is a recruiter thinking you tried to cheat.',
       },
-      { type: 'h3', text: '2. Negotiating from the current salary instead of the market' },
+      { type: 'h3', text: 'Do not overhaul once and never revisit' },
       {
         type: 'p',
         text:
-          'Every recruiter will ask what you make now. The answer they want is a data point they can use to lowball you. The answer that works is a version of "I am targeting the top of your band for the role — I would love to hear what that looks like." Anchor to the market, not to your current under-paid seat.',
+          'Every application should get a lightly tailored version — different keyword emphasis, different summary line, same underlying document. Ten minutes per application is the difference between the queue and the reject pile.',
       },
-      { type: 'h3', text: '3. Not banking the raise' },
+      { type: 'h3', text: 'Do not skip the human channels' },
       {
         type: 'p',
         text:
-          'The whole point of the 20% jump is to actually keep the 20%. People who go from $95k to $115k and immediately lease a nicer car have converted a career move into a lifestyle upgrade with no balance-sheet effect. The move only works if you route the delta into savings, a Roth, or a real emergency fund before your lifestyle finds it.',
+          'A referral gets forwarded straight to a hiring manager and often bypasses the ATS filter entirely. Fixing your resume is the floor — but a warm intro is the ceiling. Use both.',
       },
       { type: 'divider' },
       { type: 'h2', text: 'The playbook — what to actually do this week' },
       {
         type: 'ol',
         items: [
-          'Pull your last three years of raises. Add them up. Compare to the 20%+ number a peer role would pay externally on Levels.fyi, Glassdoor, or Blind for your title and city. That gap is your under-paid tax.',
-          'Update your resume this week even if you have no intention of leaving. Resumes rot when they are stale — updating cold once a quarter takes 30 minutes; updating in a panic when you get laid off takes six weeks.',
-          'Take one recruiter call per quarter. Not to leave — to learn what the market is paying for your exact seat. This is free salary calibration.',
-          'When you are inside year 3, ask your manager for the specific promotion criteria in writing. Not "am I doing well" — "what specifically has to happen for the title change." If the answer is vague, the promotion is not coming.',
-          'If you decide to move: negotiate from a written competing offer or from the top of the target band, never from your current salary.',
+          'Run the 20-minute audit above on your current resume. Do not write new content yet — fix the plumbing first.',
+          'Copy your resume text into a plain text editor. Circle anything that reads out of order or garbles a section — those are your parser breaks.',
+          'Take one job description you are actively applying to. Underline every noun and verb. Rewrite three of your bullets to include the exact language wherever it is truthfully applicable.',
+          'Save a "master" version and a "tailored" version. Never send the master version anywhere.',
+          'Post one honest ask in a relevant Slack, Discord, or LinkedIn thread each week. Referrals are the shortest path around the ATS entirely.',
         ],
       },
       {
         type: 'p',
         text:
-          'If you already read our companion post on how to build an emergency fund that actually works, this is the piece that feeds it. A career move done right is one of the fastest ways to actually fund the balance sheet you have been trying to build for years.',
+          'If you already read our companion post on how to build an emergency fund that actually works, the resume is the input to the paycheck that funds it. Fix the input and the whole system works better downstream.',
       },
       {
         type: 'callout',
-        title: 'Run your exact job-hop math, not the internet\'s',
+        title: 'The full playbook, not just the audit',
         text:
-          'The full guide includes the compounding calculator that shows your lifetime-earnings delta of stay vs. move, the exact recruiter scripts for the "what do you make now" question, a negotiation playbook with the six emails that do the actual work, and the offer-comparison spreadsheet with equity and benefits normalized. One-time $10, instant PDF, keep forever.',
+          'The full guide includes the annotated before-and-after resumes, the exact one-column .docx template that parses cleanly across Workday, Greenhouse, and Lever, a keyword-extraction worksheet for any job description, and a referral outreach script pack. One-time $10, instant PDF, keep forever.',
       },
     ],
   },
