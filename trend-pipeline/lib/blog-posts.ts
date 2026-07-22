@@ -24,6 +24,142 @@ export type BlogBlock =
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'internal-promotion-trap-job-hop-math',
+    title: 'The Internal Promotion Trap: Why Loyal Employees Are Quietly the Lowest-Paid People in the Building',
+    excerpt:
+      'The "stay and get promoted" story is comforting, but the payroll data does not support it. Here is the honest math on why the same job pays 20% more with a new logo on the offer letter — and the exact job-hop cadence that maximizes lifetime income without burning your reputation.',
+    category: 'career',
+    author: 'Hidden Library',
+    publishedAt: '2026-07-22',
+    readingMinutes: 8,
+    productSlug: 'when-to-job-hop-vs-stay-put',
+    productTitle: 'When to Job-Hop vs. Stay Put — The Career-Move Playbook',
+    content: [
+      {
+        type: 'p',
+        text:
+          'There is a story the corporate world tells everyone who joins it. Work hard, keep your head down, be patient, and the company will take care of you. In three years you will be promoted. In five you will be a manager. In ten you will be senior. It is a comforting story. It is also, according to two decades of Bureau of Labor Statistics and ADP payroll data, quietly one of the most expensive stories you can believe.',
+      },
+      {
+        type: 'p',
+        text:
+          'This post is the honest re-derivation. Why the internal promotion track under-pays, what the actual delta is in dollars, and the job-hop cadence that maximizes lifetime income without turning your resume into a red flag.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The number nobody wants to say out loud' },
+      {
+        type: 'p',
+        text:
+          'ADP has been publishing the "Pay Insights" report every month for years. It compares wage growth for job-stayers (people who kept the same employer year over year) against job-changers (people who switched employers in that window). The numbers move a little quarter to quarter, but the direction never changes.',
+      },
+      {
+        type: 'ul',
+        items: [
+          'Job-stayers: average annual raise of 4.1% in 2025, 3.6% by mid-2026.',
+          'Job-changers: average annual raise of 7.2% in 2025, and still 6.4% by mid-2026 — even in a cooling market.',
+          'Gap: 2.5–3 percentage points. Compounded across a career, that is roughly $340,000 in lifetime earnings on a $75k starting salary.',
+        ],
+      },
+      {
+        type: 'callout',
+        title: 'The uncomfortable framing',
+        text:
+          'Your employer knows exactly what they would have to pay to hire your replacement from the outside. They also know exactly what they have to pay to keep you. Those are almost never the same number — and internal raise budgets are built around the second one, not the first.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Why the internal ladder is structurally under-paid' },
+      { type: 'h3', text: '1. Merit-increase budgets are set at the top, not by role' },
+      {
+        type: 'p',
+        text:
+          'Every large company sets a company-wide merit budget once a year — usually a single percentage number handed down from finance to HR. In 2026 that number is sitting around 3.5–4%. It applies to almost everyone. It has almost nothing to do with what the outside market is paying for your specific skill. Your raise reflects the company\'s cost discipline, not your market value.',
+      },
+      { type: 'h3', text: '2. Promotions come with compression discounts' },
+      {
+        type: 'p',
+        text:
+          'When you get promoted internally, HR benchmarks the new title against the bottom of that role\'s pay band — usually the 25th to 40th percentile. When someone external is hired into the same title, they get benchmarked to the middle or top of the band. Same job, same title, two very different starting numbers. This is called pay compression, and it is not an accident.',
+      },
+      { type: 'h3', text: '3. Your baseline follows you forever' },
+      {
+        type: 'p',
+        text:
+          'A 4% raise on a low base for four years in a row leaves you meaningfully behind a peer who got a 20% bump once, even if their next three years are flat. Compounding is a floor, not a ladder — and the internal ladder starts you a floor lower than the external one.',
+      },
+      {
+        type: 'quote',
+        text:
+          '"The market pays for the value of the work. Your employer pays for the cost of losing you. If those two numbers diverge and you never leave, you never find out by how much."',
+        cite: 'A retired VP of Compensation, off the record',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The cadence that actually works' },
+      {
+        type: 'p',
+        text:
+          'The mistake most people make is not staying too long — it is hopping too often. Under two years and the pattern reads as "cannot ship anything meaningful" to a hiring manager. Over four years in the same seat and the compounding starts working against you. The sweet spot has held remarkably steady in exit-interview data across industries:',
+      },
+      {
+        type: 'ol',
+        items: [
+          'Year 1 — you are learning. The move you made to get here is your leverage. Do not move again.',
+          'Year 2 — you are shipping. Start noticing what parts of the job are portable — the outcomes, not the process — and start writing them down for future interview stories.',
+          'Year 3 — you are senior. Have a real conversation with your manager about the next level. Get a specific yes/no on timeline and pay. If the answer is soft, start looking.',
+          'Year 4 — either you have been promoted at market rate or you have an offer letter in the other hand. There is very rarely a good reason to stay flat past year 4 in the same role.',
+        ],
+      },
+      {
+        type: 'callout',
+        title: 'The counterexample everyone forgets',
+        text:
+          'This math flips inside high-growth companies where equity is meaningful and vesting is real. If you have four-year cliff-vesting stock at a company that is still compounding, staying is the move. But this is the exception, not the rule — most companies do not fit this profile, and most people overestimate how much their equity is worth.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The three ways people burn the job-hop advantage' },
+      { type: 'h3', text: '1. The "any offer is a good offer" trap' },
+      {
+        type: 'p',
+        text:
+          'People treat every recruiter email as an option and every offer as validation. It is not. A 12% raise into a role at a company that will lay you off in nine months is worse than staying put with a 4% raise. Job-hopping is a compounding strategy — it only works if each move is real.',
+      },
+      { type: 'h3', text: '2. Negotiating from the current salary instead of the market' },
+      {
+        type: 'p',
+        text:
+          'Every recruiter will ask what you make now. The answer they want is a data point they can use to lowball you. The answer that works is a version of "I am targeting the top of your band for the role — I would love to hear what that looks like." Anchor to the market, not to your current under-paid seat.',
+      },
+      { type: 'h3', text: '3. Not banking the raise' },
+      {
+        type: 'p',
+        text:
+          'The whole point of the 20% jump is to actually keep the 20%. People who go from $95k to $115k and immediately lease a nicer car have converted a career move into a lifestyle upgrade with no balance-sheet effect. The move only works if you route the delta into savings, a Roth, or a real emergency fund before your lifestyle finds it.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The playbook — what to actually do this week' },
+      {
+        type: 'ol',
+        items: [
+          'Pull your last three years of raises. Add them up. Compare to the 20%+ number a peer role would pay externally on Levels.fyi, Glassdoor, or Blind for your title and city. That gap is your under-paid tax.',
+          'Update your resume this week even if you have no intention of leaving. Resumes rot when they are stale — updating cold once a quarter takes 30 minutes; updating in a panic when you get laid off takes six weeks.',
+          'Take one recruiter call per quarter. Not to leave — to learn what the market is paying for your exact seat. This is free salary calibration.',
+          'When you are inside year 3, ask your manager for the specific promotion criteria in writing. Not "am I doing well" — "what specifically has to happen for the title change." If the answer is vague, the promotion is not coming.',
+          'If you decide to move: negotiate from a written competing offer or from the top of the target band, never from your current salary.',
+        ],
+      },
+      {
+        type: 'p',
+        text:
+          'If you already read our companion post on how to build an emergency fund that actually works, this is the piece that feeds it. A career move done right is one of the fastest ways to actually fund the balance sheet you have been trying to build for years.',
+      },
+      {
+        type: 'callout',
+        title: 'Run your exact job-hop math, not the internet\'s',
+        text:
+          'The full guide includes the compounding calculator that shows your lifetime-earnings delta of stay vs. move, the exact recruiter scripts for the "what do you make now" question, a negotiation playbook with the six emails that do the actual work, and the offer-comparison spreadsheet with equity and benefits normalized. One-time $10, instant PDF, keep forever.',
+      },
+    ],
+  },
+  {
     slug: 'emergency-fund-actual-number-2026',
     title: 'The 3-Month Emergency Fund Rule Is Broken. Here Is the Number That Actually Works.',
     excerpt:
