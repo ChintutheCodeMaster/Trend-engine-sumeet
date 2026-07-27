@@ -24,6 +24,217 @@ export type BlogBlock =
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'freelance-rate-formula-2026',
+    title: 'Your Freelance Rate Is Wrong. Here Is the Formula That Actually Pays the Bills.',
+    excerpt:
+      'Most freelancers set their rate by looking at what other freelancers charge — and then quietly wonder why the money never adds up. The problem is not the market. It is a missing formula. Here is the honest math, with the four line items nobody puts on the invoice.',
+    category: 'business',
+    author: 'Hidden Library',
+    publishedAt: '2026-07-27',
+    readingMinutes: 9,
+    content: [
+      {
+        type: 'p',
+        text:
+          'Ask ten freelancers how they set their hourly rate and nine of them will tell you some version of the same answer: "I looked at what other people in my niche were charging and picked a number that felt reasonable." It sounds humble. It sounds market-driven. It is also the single biggest reason so many talented freelancers spend a year at full capacity and end the year making less than a mid-level salaried role in the same field.',
+      },
+      {
+        type: 'p',
+        text:
+          'The rate is wrong because the method is wrong. A salaried employee sees a paycheck; the employer quietly absorbs payroll taxes, health insurance, retirement match, unpaid PTO, sick days, downtime between projects, software licenses, hardware, training, and admin. When you go freelance, all of those costs move onto your invoice — but most freelancers still price like an employee. That is the entire problem, and it is fixable in an afternoon.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The formula, in one line' },
+      {
+        type: 'p',
+        text:
+          'Target take-home + overhead + tax reserve, divided by billable hours you can actually deliver in a year. That is your rate. Every input on the top of the fraction is a real bill you will pay. Every hour on the bottom is one you can actually sell. Get either half wrong and the math collapses.',
+      },
+      {
+        type: 'callout',
+        title: 'The one-line formula',
+        text:
+          'Hourly rate = (Take-home you want + Overhead + Taxes) ÷ Billable hours per year. Everything below is just plugging in honest numbers.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Input 1 — the take-home you actually need' },
+      {
+        type: 'p',
+        text:
+          'Start with the number that pays for the life you have, not the fantasy one. Rent or mortgage, groceries, utilities, insurance premiums you pay personally, transportation, debt minimums, the boring lifestyle line items (streaming, gym, phone), plus a savings rate you can defend. If you cannot list this on one page from your bank statements, stop and do that first. Every downstream number is a guess until this one is real.',
+      },
+      { type: 'h3', text: 'A grounded example' },
+      {
+        type: 'ul',
+        items: [
+          'Monthly essentials: $4,200 (rent, food, utilities, insurance, transport, debt minimums)',
+          'Monthly lifestyle: $900 (subscriptions, gym, small joys)',
+          'Monthly savings target: $1,400 (retirement + emergency fund top-up)',
+          'Monthly total: $6,500 → annual take-home target: $78,000',
+        ],
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Input 2 — the overhead nobody puts on the invoice' },
+      {
+        type: 'p',
+        text:
+          'This is where most freelance math quietly breaks. An employer pays for hundreds of small things you now pay yourself. Missing them is not a rounding error — for a solo freelancer it is often 15 to 25 percent of gross revenue.',
+      },
+      {
+        type: 'ul',
+        items: [
+          'Health insurance premiums — routinely $500–$900/month for a single adult on an ACA plan in 2026, more for a family.',
+          'Retirement contributions you actually make (SEP-IRA or Solo 401k).',
+          'Software and subscriptions — Adobe, Figma, project management, accounting, email, storage. $150–$400/month adds up fast.',
+          'Hardware amortized over its life — laptop, monitor, chair, phone. A $3,000 laptop over 3 years is $83/month.',
+          'Professional services — CPA, bookkeeper, legal review of contracts. $1,500–$4,000/year for a solo business.',
+          'Business insurance — general liability, professional liability (E&O), cyber if you touch client data. $500–$2,000/year.',
+          'Continuing education — courses, conferences, books. If you skip this line, your rate stalls in three years.',
+          'Marketing and business development — website hosting, ads if you run them, portfolio maintenance.',
+        ],
+      },
+      {
+        type: 'callout',
+        title: 'The uncomfortable overhead reality',
+        text:
+          'For a full-time solo freelancer, honest overhead almost always lands between $18,000 and $30,000 per year. Under-count this by half and your rate is already 15% too low before you have priced a single project.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Input 3 — the tax reserve most freelancers under-set' },
+      {
+        type: 'p',
+        text:
+          'A salaried employee sees federal, state, and payroll taxes come out before the direct deposit. A freelancer sees the whole gross amount hit the account and quietly assumes it is theirs. It is not. On top of federal and state income tax, you owe 15.3% self-employment tax on net profit (the full FICA share — both the employer half and the employee half). Add it up and a typical solo freelancer at $120k gross is looking at 25–32% of profit going to taxes.',
+      },
+      {
+        type: 'ul',
+        items: [
+          'Set aside 28–32% of every profit dollar the day it lands, in a separate account you do not touch.',
+          'Pay quarterly estimated taxes (April 15, June 15, September 15, January 15) — miss them and you get penalized even if you pay in full in April.',
+          'If your net profit crosses roughly $60–80k, run the S-corp election math with a CPA. Above ~$100k it usually pays for itself.',
+        ],
+      },
+      {
+        type: 'quote',
+        text:
+          '"Money in the business account is not your money. It is a mix of your money and the government\'s money — and you are just holding the government\'s portion for a few months."',
+        cite: 'Every freelancer, the first time they get an April tax bill',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Input 4 — the billable hours you can actually deliver' },
+      {
+        type: 'p',
+        text:
+          'The most common pricing mistake, by a wide margin, is this one. Freelancers punch "40 hours a week × 52 weeks = 2,080 billable hours" into the calculator and price against that. The number is a fantasy. Nobody bills 2,080 hours a year. The honest number for a full-time solo freelancer is closer to 1,000–1,200.',
+      },
+      { type: 'h3', text: 'The 2,080 hours, honestly deducted' },
+      {
+        type: 'ul',
+        items: [
+          '2,080 hours available in a 40-hour year',
+          'Minus 3 weeks vacation and 10 holidays → 200 hours gone → 1,880',
+          'Minus 8 sick/personal days → 64 hours gone → 1,816',
+          'Minus admin, bookkeeping, invoicing, email, taxes, filing (roughly 20% of your week) → 363 hours gone → 1,453',
+          'Minus sales, proposals, calls that do not close, marketing, portfolio, networking (roughly 15%) → 218 hours gone → 1,235',
+          'Minus gaps between projects, capacity dips, slow months → often another 10–15% → ~1,050–1,110 billable hours',
+        ],
+      },
+      {
+        type: 'callout',
+        title: 'The number to use',
+        text:
+          'For a full-time solo freelancer, plan on 1,000 to 1,200 truly billable hours per year. Use 1,100 as the default unless you have booked calendars that prove otherwise.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Running the number: three worked examples' },
+      { type: 'h3', text: 'The "just paying the bills" solo freelancer' },
+      {
+        type: 'ul',
+        items: [
+          'Take-home target: $60,000',
+          'Overhead: $18,000',
+          'Tax reserve (28%): about $30,000 on the required ~$108k gross',
+          'Total gross needed: $108,000',
+          'Billable hours: 1,100',
+          'Rate: ~$98/hour — call it $100/hour minimum',
+        ],
+      },
+      { type: 'h3', text: 'The "comfortable middle" freelancer' },
+      {
+        type: 'ul',
+        items: [
+          'Take-home target: $90,000',
+          'Overhead: $24,000',
+          'Tax reserve (30%): about $49,000 on ~$163k gross',
+          'Total gross needed: $163,000',
+          'Billable hours: 1,100',
+          'Rate: ~$148/hour — round to $150/hour',
+        ],
+      },
+      { type: 'h3', text: 'The senior specialist freelancer' },
+      {
+        type: 'ul',
+        items: [
+          'Take-home target: $150,000',
+          'Overhead: $30,000',
+          'Tax reserve (32%): about $85,000 on ~$265k gross',
+          'Total gross needed: $265,000',
+          'Billable hours: 1,100',
+          'Rate: ~$241/hour — round to $250/hour',
+        ],
+      },
+      {
+        type: 'p',
+        text:
+          'Compare these to what most freelancers actually charge in their niche and you can usually see the gap immediately. The $65/hour designer wondering why they can never get ahead is not underpaid by the market — they are underpaid by their own formula.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The three ways this still goes wrong' },
+      { type: 'h3', text: '1. Charging hourly for value-priced work' },
+      {
+        type: 'p',
+        text:
+          'Once your rate calculation is honest, use it as a floor — not a ceiling. Package work into scoped projects with fixed fees anchored to the outcome, not the input. A branding project priced at $6,500 fixed can consume 30 hours of skilled work and deliver ten times that in client value; billed hourly at even $200, you leave a chunk on the table and cap your income at your calendar.',
+      },
+      { type: 'h3', text: '2. Discounting on request without shrinking scope' },
+      {
+        type: 'p',
+        text:
+          'When a client asks for a lower price, the only sustainable answer is a smaller scope. If you cut price without cutting deliverables, you have just lowered your effective rate below the number the math above says you need to survive. Every discount without a scope change is a slow business-model failure.',
+      },
+      { type: 'h3', text: '3. Not raising rates on existing clients' },
+      {
+        type: 'p',
+        text:
+          'Costs go up every year — health insurance, software, rent, taxes. If your rate stays flat, your real income shrinks. Build a September or January rate-review ritual, notify existing clients 60 days ahead, and raise by 5–10% annually. The clients who value the work stay. The ones who leave were priced correctly to leave.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The playbook — what to actually do this week' },
+      {
+        type: 'ol',
+        items: [
+          'Pull three months of personal bank and card statements. Add essentials + lifestyle + savings and multiply by 12 to get your honest annual take-home target.',
+          'Add up every business expense you paid last year — software, hardware, insurance, CPA, education, marketing. That is your overhead line.',
+          'Estimate your tax reserve at 28–32% of gross depending on your state and structure. Open a separate high-yield savings account today and start routing that share the day money lands.',
+          'Cap your billable hours at 1,100 unless you can prove otherwise from a full year of tracked timesheets.',
+          'Plug the four numbers into the formula. Compare the resulting rate to what you currently charge. If the gap is more than 15%, plan a rate change on new clients within 30 days and existing clients within 60.',
+          'Move at least one client engagement from hourly to a fixed project fee this quarter. Track how the effective hourly rate moves — it almost always goes up.',
+        ],
+      },
+      {
+        type: 'p',
+        text:
+          'If you already read our companion post on when the S-corp election actually saves money, this rate calculation is the input to that decision. Fix the pricing first — then the tax structure has enough profit underneath it to be worth optimizing.',
+      },
+      {
+        type: 'callout',
+        title: 'The full pricing playbook, not just the formula',
+        text:
+          'The full guide includes the plug-and-play rate calculator with all four inputs pre-modeled, the overhead checklist for solo consultants, a fixed-fee project scoping template, and the exact client email scripts for the annual rate raise. One-time $10, instant PDF, keep forever.',
+      },
+    ],
+  },
+  {
     slug: 'ats-resume-fix-2026',
     title: 'Your Resume Is Getting Rejected Before a Human Ever Sees It. Here Is the 20-Minute Fix.',
     excerpt:
