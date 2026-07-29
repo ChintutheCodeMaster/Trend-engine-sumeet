@@ -24,6 +24,139 @@ export type BlogBlock =
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'where-cash-belongs-2026',
+    title: 'Your High-Yield Savings Account Is Quietly Costing You Money. Here Is Where Your Cash Actually Belongs in 2026.',
+    excerpt:
+      'For a decade, the "high-yield" savings account was the obvious place to park cash. In 2026 it is quietly one of the worst places for it. The advertised rate is a fraction of the real return, taxes and inflation eat most of what is left, and three other options beat it on almost every dimension. Here is the honest tier list.',
+    category: 'money',
+    author: 'Hidden Library',
+    publishedAt: '2026-07-29',
+    readingMinutes: 8,
+    content: [
+      {
+        type: 'p',
+        text:
+          'For most of the last decade, the personal-finance advice was easy: whatever cash you were not investing belonged in a "high-yield" savings account. It was insured, it was liquid, it paid better than the checking-account joke of 0.01%, and it required almost zero effort to set up. That advice made sense in 2018. In 2026, if you are still following it without a second thought, you are quietly leaving real money on the table every month.',
+      },
+      {
+        type: 'p',
+        text:
+          'The uncomfortable reality is that the headline APY on a HYSA is one of the most misleading numbers in personal finance. Once you strip out federal tax, state tax (in the states that apply it), and the inflation drag that never goes away, the "5% high-yield" account most people are proud of is delivering a real return that rounds to zero. There are three vehicles that beat it on rate, on tax treatment, or on both — and almost nobody who is not already in finance uses them by default.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The real return math nobody shows you' },
+      {
+        type: 'p',
+        text:
+          'Every HYSA ad shows you the nominal APY in bold. Nobody shows you the post-tax, post-inflation number, because the post-tax, post-inflation number is embarrassing. Here is the honest calculation for a typical account in mid-2026.',
+      },
+      {
+        type: 'ul',
+        items: [
+          'Advertised APY: 4.85% (a representative top-of-market online HYSA in July 2026).',
+          'After federal tax at a 24% bracket: ~3.69%. Interest is taxed as ordinary income, not at the lower capital-gains rate.',
+          'After state income tax (5% average, applied on top): ~3.44%.',
+          'After 2026 CPI inflation (~3.1% trailing twelve months): ~0.34% real return.',
+          'On $20,000 of parked cash, that is roughly $68 of real purchasing power gained over a full year. For all the "high-yield" branding.',
+        ],
+      },
+      {
+        type: 'callout',
+        title: 'The uncomfortable framing',
+        text:
+          'The word "high-yield" is doing enormous rhetorical work. Once tax and inflation are honestly deducted, a top-of-market HYSA in 2026 is a savings account that barely keeps up with the price of groceries — not a wealth-building tool.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The four places cash can actually live (ranked)' },
+      {
+        type: 'p',
+        text:
+          'The right home for cash depends on how quickly you need to access it and how much friction you are willing to tolerate. For almost every cash bucket that is not "money I will spend in the next 14 days," at least one of the following three options beats a HYSA cleanly.',
+      },
+      { type: 'h3', text: '1. Treasury bills (T-bills) — the quiet winner' },
+      {
+        type: 'p',
+        text:
+          'Short-term US Treasury bills (4-week, 8-week, 13-week, 26-week) are currently paying in the neighborhood of 5.10-5.25%, which is already better than any HYSA on the market. The bigger deal is that T-bill interest is exempt from state and local income tax. If you live in California, New York, Oregon, or any other state with a meaningful income tax, that exemption alone can be worth another 0.3-0.5% of real return versus a HYSA at the same nominal rate. Buy them through TreasuryDirect (free, slightly clunky UI) or through any brokerage — Fidelity, Schwab, and Vanguard all let you buy T-bills at auction with zero commission.',
+      },
+      { type: 'h3', text: '2. Money market funds (MMFs) — the effortless upgrade' },
+      {
+        type: 'p',
+        text:
+          'A money market fund is not a money market account. Funds like SPAXX (Fidelity), VMFXX (Vanguard), or the ETF-wrapped SGOV are portfolios of very short-duration Treasuries and repos. They typically yield within 0.05-0.20% of the T-bill rate, they settle in one business day, and at most brokerages your cash is automatically swept into them the moment it hits your account. Zero effort, zero laddering, better return than a HYSA, and for the government-only funds like VMFXX and SGOV, most of the yield is also state-tax exempt.',
+      },
+      { type: 'h3', text: '3. Series I savings bonds — the inflation hedge' },
+      {
+        type: 'p',
+        text:
+          'I-bonds are the only vehicle in this list that is explicitly designed to beat inflation — the composite rate resets every six months based on CPI. The catch: $10,000 per person per calendar year purchase cap, one-year minimum lock-up, and a three-month interest penalty if you redeem before year five. So they are not a place for your emergency fund. They are a place for the slow, boring, long-horizon cash you want to keep pace with inflation without touching the stock market. If you are a household of two, you can move $20,000/year in there and quietly build a real (inflation-adjusted) reserve over a decade.',
+      },
+      { type: 'h3', text: '4. HYSA — the last-place tier, but not zero-use' },
+      {
+        type: 'p',
+        text:
+          'HYSAs still have exactly one job they do better than anything else: instant transfer to and from a linked checking account for bill-pay buffers, rent, and short-term working capital. For the two-to-four weeks of cash that has to be genuinely at-your-fingertips liquid on any day of the week, a HYSA is fine. For anything past that horizon, you are paying a convenience premium of roughly half a percent for liquidity you are not actually using.',
+      },
+      {
+        type: 'callout',
+        title: 'The rule of thumb',
+        text:
+          'Two-to-four weeks of expenses in a HYSA for bill-pay. Emergency fund and short-term cash in T-bills or a money market fund. Slow long-horizon inflation reserve in I-bonds up to the annual cap. Everything past that belongs in your actual investment accounts, not in cash.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The three mistakes that quietly cost people the most' },
+      { type: 'h3', text: '1. Leaving six months of expenses in a HYSA "just in case"' },
+      {
+        type: 'p',
+        text:
+          'A three-day-settlement money market fund at your brokerage is functionally as accessible as a HYSA for any real emergency (medical bills, job loss, car repair — none of those need the money in 60 minutes). Sitting on $30,000 of emergency-fund cash at 4.85% instead of 5.15% state-tax-exempt is quietly costing a typical household $150-$250 per year for no meaningful liquidity benefit.',
+      },
+      { type: 'h3', text: '2. Chasing the newest 5.5% teaser rate' },
+      {
+        type: 'p',
+        text:
+          'The "5.5% for the first six months, then reverts to 3.8%" HYSA promo is a marketing product, not a savings product. The average customer who opens one ends up with an effective 12-month yield below the market average because they never move the money after the teaser expires. Meanwhile, T-bill and MMF yields track the Fed funds rate mechanically — no promos, no reversion, no attention required.',
+      },
+      { type: 'h3', text: '3. Confusing "FDIC insured" with "the safest option"' },
+      {
+        type: 'p',
+        text:
+          'Direct US Treasuries are backed by the full faith and credit of the US government — the same entity that ultimately backstops the FDIC. If your concern is safety, a T-bill or a Treasury-only money market fund is not less safe than an FDIC-insured HYSA. It is arguably more direct. The safety comparison is not the reason to prefer a HYSA; the only real reason is instant same-day liquidity, and that is a much narrower use case than most people give it credit for.',
+      },
+      {
+        type: 'quote',
+        text:
+          '"The financial industry sells convenience as if it were a service. For anyone whose cash bucket is bigger than one month of expenses, the convenience is costing more than it is worth."',
+        cite: 'Every fee-only financial planner willing to say it out loud',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The playbook — what to actually do this week' },
+      {
+        type: 'ol',
+        items: [
+          'Add up every dollar you currently have in HYSAs, checking accounts, and money market accounts. Write down the number. Most people are surprised how big it is.',
+          'Decide honestly how much of that you need same-day-liquid for bill-pay. For most households the answer is 2-4 weeks of expenses. Leave that amount in the HYSA.',
+          'Move the rest into a money market fund at your existing brokerage. At Fidelity it happens automatically (SPAXX). At Vanguard, put it in VMFXX. At Schwab, buy SGOV in the brokerage account. Total time: under 15 minutes.',
+          'If you have a longer-horizon reserve (12+ months of cash you truly will not touch), buy your annual $10,000 of I-bonds through TreasuryDirect. Do it in January so the year-of-purchase clock starts as early as possible.',
+          'Cancel any HYSA teaser-rate accounts that have already reverted. The paperwork exists to keep you inert; the fix is one phone call.',
+          'Set a single calendar reminder for January 2027 to top up the next year of I-bonds. That is the only ongoing maintenance this system requires.',
+          'Stop checking rates weekly. T-bill and MMF yields move with the Fed, not with your attention. The whole point is a setup that quietly earns more without needing to be babysat.',
+        ],
+      },
+      {
+        type: 'p',
+        text:
+          'If you already read our companion post on the broken 3-month emergency fund rule, this is the operational half of the same argument: getting the right number of months in the emergency fund is worthless if the account it sits in is silently underpaying you by half a percent a year. The vehicle matters as much as the size.',
+      },
+      {
+        type: 'callout',
+        title: 'The full cash playbook, not just the tier list',
+        text:
+          'The full guide includes the exact brokerage setup screens, the T-bill auto-roll ladder that eliminates reinvestment friction, the tax-lot strategy for the state-exempt yield capture, and the tiered structure that separates bill-pay cash, emergency cash, sinking funds, and inflation-hedged long-cash — with worked examples for $10k, $50k, and $250k cash balances. One-time $10, instant PDF, keep forever.',
+      },
+    ],
+  },
+  {
     slug: 'deep-work-ceiling-2026',
     title: 'The Deep Work Ceiling: You Only Get 4 Great Hours a Day. Here Is How to Actually Use Them.',
     excerpt:
