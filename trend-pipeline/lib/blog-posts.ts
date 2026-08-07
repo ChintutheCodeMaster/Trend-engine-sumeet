@@ -24,6 +24,178 @@ export type BlogBlock =
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'raise-conversation-timing-2026',
+    title: 'Your Annual Raise Conversation Is Backwards. Here Is the Timing (and Script) That Actually Works in 2026.',
+    excerpt:
+      'Most people ask for a raise during their annual review — the exact moment their manager has the least power to give them one. The budget was already set six weeks earlier, in a room they were not in. Here is the honest calendar of when raises actually get decided, and the script that lands you inside the room while the number is still soft.',
+    category: 'career',
+    author: 'Hidden Library',
+    publishedAt: '2026-08-07',
+    readingMinutes: 8,
+    content: [
+      {
+        type: 'p',
+        text:
+          'Every career book written before roughly 2015 gives you the same script: wait for your annual performance review, walk in with a folder of accomplishments, ask for the number you deserve. It is a comforting story. It is also, in most modern companies, the single worst possible moment to have the conversation. By the time you are sitting across from your manager in review week, the compensation pool for your team has already been allocated, frozen, and rubber-stamped by finance. Your manager is not deciding your raise in that room. They are handing you a decision that was made in a different room, six to ten weeks earlier, by people you have never met.',
+      },
+      {
+        type: 'p',
+        text:
+          'The uncomfortable reality of modern comp: raises are a budget event, not a performance event. The performance review is the paperwork. The actual number gets set upstream, in a planning cycle almost nobody explains to you. The single highest-leverage move you can make on your income this year is not a better folder of accomplishments — it is showing up in the correct conversation, in the correct month, before the pool is locked.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The real corporate comp calendar (the one nobody sends you)' },
+      {
+        type: 'p',
+        text:
+          'Almost every mid-to-large company runs some version of the same annual cycle. The names and dates shift by a few weeks depending on the fiscal year, but the sequence is remarkably consistent — and it explains almost everything about why the "ask in your review" playbook produces such thin results.',
+      },
+      {
+        type: 'ul',
+        items: [
+          'Late Q2 / early Q3 (July–August) — HR and finance start scoping next year\'s total comp budget. Department heads are asked to project headcount and comp increases.',
+          'Q3 (September–October) — your manager\'s manager is quietly building the case for what percentage bump the team should get. They need names, evidence, and market data now.',
+          'Late Q3 / early Q4 (November) — finance freezes the pool. From this point forward, the total dollars are fixed. Only the distribution across people can change.',
+          'Q1 (January–February) — your manager allocates the frozen pool across their team. This is where the "who gets what" decisions happen.',
+          'Q1 review week (February–March, sometimes April) — you sit down. Your manager reads you a number that was decided two weeks ago from a spreadsheet that was locked three months ago.',
+        ],
+      },
+      {
+        type: 'callout',
+        title: 'The uncomfortable framing',
+        text:
+          'Your annual review is not a negotiation. It is a delivery. The negotiation window closed in October, and almost nobody told you it was open.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'Where you actually want to be standing (and when)' },
+      {
+        type: 'p',
+        text:
+          'The high-leverage months are August and September. That is the window when your manager is still assembling the pitch for next year\'s pool — when they need ammunition to walk into the department budget meeting and argue that their team, and specifically the people on it, deserve a larger share. Everything you give them in this window is a tool they use on your behalf. Everything you give them in February is just paperwork.',
+      },
+      {
+        type: 'p',
+        text:
+          'The script is not "I want a raise." The script is: "I want to make sure you have what you need for planning season. Here is what I have done, here is the market data for my role, here is where I want to be in 12 months. What would help you make the case?" That reframes you from a person asking for money into a person handing your manager the case they were going to have to build anyway.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The four inputs your manager actually needs' },
+      { type: 'h3', text: '1. Market comp data for your exact role and level' },
+      {
+        type: 'p',
+        text:
+          'Not "I saw a job on LinkedIn paying more." A defensible number: Levels.fyi for tech, Payscale or Salary.com for most other fields, Robert Half salary guides for finance and admin, plus a screenshot of two or three currently-open comparable roles at peer companies. Hand your manager a one-page PDF. They will use it verbatim in the budget conversation. If you do not hand it to them, they will use last year\'s stale internal band, which is always low.',
+      },
+      { type: 'h3', text: '2. Scope-creep evidence' },
+      {
+        type: 'p',
+        text:
+          'Almost every valuable employee is quietly doing work that was not in the job description they were hired against. New systems they own, meetings they now run, cross-functional relationships they manage, teams that route around them. Write it down. The lift from "I did my job well" to "the job I am actually doing is one level up from my title" is the single biggest comp lever most people have.',
+      },
+      { type: 'h3', text: '3. A retention risk signal (used carefully)' },
+      {
+        type: 'p',
+        text:
+          'You do not need to threaten to leave. You do need to make clear that the market has noticed you. "I have been getting more inbound outreach lately and I want to be honest about that — I am not looking to move, but I want to make sure my comp keeps pace so it stays a non-question." That sentence, said in September, moves you up the manager\'s priority list for the frozen November pool. Said in February, it looks like extortion.',
+      },
+      { type: 'h3', text: '4. A promotion narrative your manager can repeat' },
+      {
+        type: 'p',
+        text:
+          'Your manager is going to be asked to justify your bump in a room full of other managers arguing for theirs. Give them a two-sentence story they can repeat: "She has been operating at senior level for six months — owning the roadmap on X, mentoring the two juniors, and running the vendor relationship. Promoting her formalizes what is already happening." If they cannot say your story in one breath, they will not fight for you.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The 60-day pre-budget script' },
+      {
+        type: 'p',
+        text:
+          'This is the specific conversation to have in your regular 1:1 sometime in the second half of August or the first two weeks of September. It is short, unemotional, and it costs your manager nothing to say yes to.',
+      },
+      {
+        type: 'quote',
+        text:
+          '"I know planning season is coming up. I want to make sure you have everything you need from me to make the strongest possible case for my comp and level for next year. I put together a one-pager — my scope changes since the last cycle, the market data for my role, and where I want to be in 12 months. Can I walk you through it, and then can you tell me honestly what else you would need to build the case internally?"',
+        cite: 'The one paragraph that reframes the entire conversation',
+      },
+      {
+        type: 'p',
+        text:
+          'That paragraph does three things in under 30 seconds. It signals that you are aware of the real calendar (which most people are not, and that quiet signal alone changes how you are perceived). It hands your manager a tool. And it forces an honest conversation about what is actually possible — while there is still time to shape it.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The three moments outside the annual cycle where raises happen faster' },
+      { type: 'h3', text: '1. Org restructures' },
+      {
+        type: 'p',
+        text:
+          'Anytime a team splits, merges, or a level of management is removed, comp bands get re-drawn. This is one of the only moments the "frozen pool" is opened mid-cycle. If your company reorgs, do not wait — schedule the conversation about your new scope and title within two weeks, while the org chart is still in pencil.',
+      },
+      { type: 'h3', text: '2. The backfill scenario' },
+      {
+        type: 'p',
+        text:
+          'When a peer leaves and their work lands on you, the company has just saved a salary and expanded your scope in the same week. Say so explicitly, quickly, and in writing: "I am happy to take on X\'s book of work, and I want to make sure we address the comp and title implications now rather than at review." Companies pay for this immediately far more often than they pay for a general annual bump.',
+      },
+      { type: 'h3', text: '3. The competing offer (used exactly once per employer)' },
+      {
+        type: 'p',
+        text:
+          'A real offer from a real company, delivered without ultimatum, is the only tool that reliably unlocks non-cycle comp adjustments at almost every company on earth. Use it sparingly. You get to play this card roughly once at any given employer — after that you are labeled a flight risk and treated accordingly.',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The three most expensive mistakes' },
+      { type: 'h3', text: '1. Asking during your review' },
+      {
+        type: 'p',
+        text:
+          'You are asking a person with no remaining authority for a number they cannot change. At best you get a sympathetic apology and a promise to "advocate for you next cycle." Which is exactly what would have happened if you had said nothing.',
+      },
+      { type: 'h3', text: '2. Framing the ask as personal need' },
+      {
+        type: 'p',
+        text:
+          'Rent went up. Childcare is expensive. Your partner\'s hours got cut. None of this is your manager\'s budget to solve, and framing the ask this way makes the conversation feel like a favor request instead of a market correction. The ask is always framed the same way: this is what the role is worth, this is what I am doing, this is what the market says. Personal circumstances do not enter the room.',
+      },
+      { type: 'h3', text: '3. Negotiating against inflation instead of market' },
+      {
+        type: 'p',
+        text:
+          'A "cost-of-living adjustment" is a small, categorical, formula-driven number. A "market adjustment" is a large, discretionary, case-by-case number. The words matter. Ask for the second one. Companies pay it. They almost never pay meaningful COLA.',
+      },
+      {
+        type: 'quote',
+        text:
+          '"The single most under-valued skill in a corporate career is knowing what month the conversation actually happens in. Everything downstream of that is just execution."',
+        cite: 'Every HR business partner willing to say it out loud',
+      },
+      { type: 'divider' },
+      { type: 'h2', text: 'The playbook — what to actually do this month' },
+      {
+        type: 'ol',
+        items: [
+          'Find out your company\'s fiscal year. If it is calendar (most common), your budget window is closing in October. If it is April-start (common in tech and finance), you are already inside it.',
+          'Build the one-pager this week: scope changes since your last review, current market comp data for your role and level with three linked sources, and a one-line 12-month ask (title, band, or dollar range).',
+          'Book a 30-minute slot on your manager\'s calendar in the second half of August or first two weeks of September. Label it something normal — "career planning" or "quick alignment" — not "salary."',
+          'Deliver the pre-budget script. Ask what else they need from you to make the case. Get a specific, written commitment on what happens next, and by when.',
+          'Follow up in writing that same day summarizing what you covered and what they agreed to bring into planning. This gives your manager a document to attach to their budget submission.',
+          'Skip the raise ask at your February review entirely. That conversation is now a status update, not a negotiation. Save your emotional energy for the September ask that actually moves the number.',
+          'If the answer in September is "the pool is going to be tight this year," start a job search that same week. That sentence is your leading indicator, months earlier than most people spot it.',
+        ],
+      },
+      {
+        type: 'p',
+        text:
+          'If you already read our companion post on the ATS filter that quietly rejects your resume before a human ever sees it, this is the mirror problem inside your current company. The gatekeeping happens weeks earlier than most people realize — in both directions. The trick, in both cases, is showing up in the right room at the right time.',
+      },
+      {
+        type: 'callout',
+        title: 'The full raise playbook, not just the timing',
+        text:
+          'The full guide includes the one-page comp brief template, the exact 90-day script sequence (August 1:1, September follow-up, October confirmation), the market-data source list by industry, the promotion narrative worksheet, and the competing-offer playbook for the one time you actually use it. One-time $10, instant PDF, keep forever.',
+      },
+    ],
+  },
+  {
     slug: 'where-cash-belongs-2026',
     title: 'Your High-Yield Savings Account Is Quietly Costing You Money. Here Is Where Your Cash Actually Belongs in 2026.',
     excerpt:
