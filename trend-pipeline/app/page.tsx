@@ -14,6 +14,7 @@ type Book = {
   pattern: string;
   desc: string;
   coverImageUrl?: string | null;
+  posterMode?: boolean;
 };
 
 const CATEGORY_THEMES: Record<string, { bg: string; accent: string; pattern: string; label: string }> = {
@@ -25,8 +26,25 @@ const CATEGORY_THEMES: Record<string, { bg: string; accent: string; pattern: str
 };
 const DEFAULT_THEME = { bg: 'linear-gradient(145deg,#1a1a2e,#16213e)', accent: '#818cf8', pattern: '◇', label: 'General' };
 
+// Local poster thumbnails — self-contained (already have title + branding baked in).
+// When set, the carousel card renders only the poster (no overlay badge/title/footer).
+const SLUG_THUMBNAILS: Record<string, string> = {
+  'devil-pact':                                                        '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14%20(6).jpeg',
+  'how-much-coffee-should-i-drink-daily-to-be-healthy':                '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14%20(7).jpeg',
+  'how-do-i-make-healthier-lifestyle-choices':                         '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14%20(5).jpeg',
+  'how-do-i-save-taxes-on-international-taxation':                     '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14%20(3).jpeg',
+  'how-do-i-negotiate-an-appraisal-without-burning-any-bridges':       '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14%20(4).jpeg',
+  's-corp-vs-llc-which-structure-saves-more-tax':                      '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14%20(2).jpeg',
+  'deep-work-system-for-remote-workers':                               '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14.jpeg',
+  'building-a-6-figure-consulting-business':                           '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14%20(1).jpeg',
+  'getting-out-of-credit-card-debt-in-18-months':                      '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14%20(10).jpeg',
+  'the-freelancer-s-complete-tax-playbook':                            '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14%20(9).jpeg',
+  'how-to-pay-yourself-from-an-llc-without-double-taxation-money':     '/thumbnails/WhatsApp%20Image%202026-09-07%20at%2014.55.14%20(8).jpeg',
+};
+
 function dbProductToBook(p: { slug: string; keyword: string; category: string; headline?: string; subheadline?: string; cover_image_url?: string | null }): Book {
   const theme = CATEGORY_THEMES[p.category] ?? DEFAULT_THEME;
+  const localThumb = SLUG_THUMBNAILS[p.slug];
   return {
     slug: p.slug,
     title: p.headline || p.keyword,
@@ -36,7 +54,8 @@ function dbProductToBook(p: { slug: string; keyword: string; category: string; h
     accent: theme.accent,
     pattern: theme.pattern,
     desc: p.subheadline || '',
-    coverImageUrl: p.cover_image_url ?? null,
+    coverImageUrl: localThumb ?? p.cover_image_url ?? null,
+    posterMode: !!localThumb,
   };
 }
 
@@ -71,8 +90,23 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
       padding: '20px 18px 16px',
       overflow: 'hidden',
     }}>
+      {/* Poster mode: local self-contained thumbnail — render image only, no overlays */}
+      {book.posterMode && hasCover && (
+        <img
+          src={book.coverImageUrl!}
+          alt={book.title}
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'cover',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+        />
+      )}
+
       {/* AI-generated cover image (fills card) */}
-      {hasCover && (
+      {!book.posterMode && hasCover && (
         <>
           <img
             src={book.coverImageUrl!}
@@ -94,7 +128,7 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
         </>
       )}
 
-      {/* Background pattern (only when no AI cover) */}
+      {/* Background pattern (only when no cover at all) */}
       {!hasCover && (
         <>
           <div style={{
@@ -114,60 +148,62 @@ function BookCover({ book, offset, onClick }: { book: Book; offset: number; onCl
         </>
       )}
 
-      {/* Top: category badge */}
-      <div style={{
-        display: 'inline-block',
-        background: 'rgba(255,255,255,0.1)',
-        backdropFilter: 'blur(4px)',
-        color: book.accent,
-        fontSize: '9px',
-        fontWeight: 700,
-        letterSpacing: '2px',
-        textTransform: 'uppercase',
-        padding: '5px 10px',
-        borderRadius: 4,
-        alignSelf: 'flex-start',
-        border: `1px solid rgba(255,255,255,0.08)`,
-      }}>
-        {book.label}
-      </div>
+      {/* Overlay chrome — skip for posters (they carry their own branding) */}
+      {!book.posterMode && (
+        <>
+          <div style={{
+            display: 'inline-block',
+            background: 'rgba(255,255,255,0.1)',
+            backdropFilter: 'blur(4px)',
+            color: book.accent,
+            fontSize: '9px',
+            fontWeight: 700,
+            letterSpacing: '2px',
+            textTransform: 'uppercase',
+            padding: '5px 10px',
+            borderRadius: 4,
+            alignSelf: 'flex-start',
+            border: `1px solid rgba(255,255,255,0.08)`,
+          }}>
+            {book.label}
+          </div>
 
-      {/* Title */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', paddingBottom: 10 }}>
-        <p style={{
-          color: '#fff',
-          fontSize: '0.85rem',
-          fontWeight: 700,
-          lineHeight: 1.45,
-          margin: 0,
-          textShadow: '0 2px 8px rgba(0,0,0,0.6)',
-        }}>
-          {book.title}
-        </p>
-      </div>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', paddingBottom: 10 }}>
+            <p style={{
+              color: '#fff',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              lineHeight: 1.45,
+              margin: 0,
+              textShadow: '0 2px 8px rgba(0,0,0,0.6)',
+            }}>
+              {book.title}
+            </p>
+          </div>
 
-      {/* Footer */}
-      <div style={{
-        borderTop: '1px solid rgba(255,255,255,0.08)',
-        paddingTop: 10,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}>
-        <span style={{ color: book.accent, fontSize: '9px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase' }}>
-          Hidden Library
-        </span>
-        <span style={{
-          background: 'rgba(255,255,255,0.1)',
-          color: '#fff',
-          fontSize: '10px',
-          fontWeight: 700,
-          padding: '2px 8px',
-          borderRadius: 3,
-        }}>
-          $10
-        </span>
-      </div>
+          <div style={{
+            borderTop: '1px solid rgba(255,255,255,0.08)',
+            paddingTop: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <span style={{ color: book.accent, fontSize: '9px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+              Hidden Library
+            </span>
+            <span style={{
+              background: 'rgba(255,255,255,0.1)',
+              color: '#fff',
+              fontSize: '10px',
+              fontWeight: 700,
+              padding: '2px 8px',
+              borderRadius: 3,
+            }}>
+              $10
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -772,23 +808,27 @@ function BookModal({ book, onClose }: { book: Book; onClose: () => void }) {
                   userSelect: 'none',
                 }}
               />
-              {/* Bottom gradient for label/title legibility */}
-              <div style={{
-                position: 'absolute', left: 0, right: 0, bottom: 0, height: '50%',
-                background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0) 100%)',
-                pointerEvents: 'none',
-              }} />
-              <div style={{
-                position: 'absolute', left: 0, right: 0, bottom: 24,
-                textAlign: 'center', padding: '0 24px', zIndex: 1,
-              }}>
-                <div style={{ color: book.accent, fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>
-                  {book.label} · Hidden Library
-                </div>
-                <p style={{ color: '#fff', fontWeight: 800, fontSize: '1.05rem', lineHeight: 1.4, textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>
-                  {book.title}
-                </p>
-              </div>
+              {!book.posterMode && (
+                <>
+                  {/* Bottom gradient for label/title legibility */}
+                  <div style={{
+                    position: 'absolute', left: 0, right: 0, bottom: 0, height: '50%',
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0) 100%)',
+                    pointerEvents: 'none',
+                  }} />
+                  <div style={{
+                    position: 'absolute', left: 0, right: 0, bottom: 24,
+                    textAlign: 'center', padding: '0 24px', zIndex: 1,
+                  }}>
+                    <div style={{ color: book.accent, fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>
+                      {book.label} · Hidden Library
+                    </div>
+                    <p style={{ color: '#fff', fontWeight: 800, fontSize: '1.05rem', lineHeight: 1.4, textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>
+                      {book.title}
+                    </p>
+                  </div>
+                </>
+              )}
             </>
           ) : (
             <>
