@@ -120,11 +120,20 @@ async function processTrend(trend) {
 
 async function runPipeline() {
   const pipelineStart = Date.now();
+  const supabase = getSupabase();
+
+  // Record the run — makes outcomes visible to the routine.
+  const { data: runRow } = await supabase
+    .from('pipeline_runs')
+    .insert({ status: 'running' })
+    .select('id')
+    .single();
+  const runId = runRow?.id ?? null;
 
   console.log('\n╔════════════════════════════════════════╗');
   console.log('║   HAYDEN LIBRARY — LONGTAIL PIPELINE   ║');
   console.log('╚════════════════════════════════════════╝');
-  console.log(`  Started: ${new Date().toISOString()}\n`);
+  console.log(`  Started: ${new Date().toISOString()}  run=${runId ?? 'n/a'}\n`);
 
   // ── Phase 1: Generate evergreen long-tail questions ──
   console.log('── Phase 1: Longtail Question Discovery ──');
@@ -198,7 +207,29 @@ async function runPipeline() {
     successOpt.forEach(r => console.log(`    ✓ "${r.keyword}": ${r.rationale}`));
   }
 
+  // Finalize telemetry
+  if (runId) {
+    await supabase.from('pipeline_runs').update({
+      finished_at: new Date().toISOString(),
+      status: failedNew.length > 0 && successNew.length === 0 ? 'failed' : 'success',
+      new_products: successNew.length,
+      failed: failedNew.length,
+      duration_ms: Date.now() - pipelineStart,
+      notes: successNew.map(r => r.slug).join(','),
+    }).eq('id', runId);
+  }
+
   return [...newProducts, ...optimizationResults];
 }
 
 module.exports = { runPipeline };
+
+// CLI entrypoint — `node orchestrator.js` runs the pipeline standalone.
+if (require.main === module) {
+  runPipeline()
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error('[orchestrator] Fatal:', err?.stack || err?.message || err);
+      process.exit(1);
+    });
+}

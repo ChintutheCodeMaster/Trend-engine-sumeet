@@ -8,7 +8,10 @@ require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const { createClient } = require('@supabase/supabase-js');
 const puppeteer = require('puppeteer');
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY,
+);
 
 async function run() {
   const slug = process.argv[2];
@@ -82,4 +85,10 @@ async function run() {
   console.log(`[generatePDF] Done. pdf_url saved for "${slug}".`);
 }
 
-run();
+run().then(
+  () => process.exit(0),
+  (err) => {
+    console.error('[generatePDF] Fatal:', err?.stack || err?.message || err);
+    process.exit(1);
+  },
+);

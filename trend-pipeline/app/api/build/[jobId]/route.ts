@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { spawn } from 'child_process';
+import path from 'path';
 
 export const maxDuration = 300;
 
@@ -50,6 +52,31 @@ async function generateProductWithRetry(trend: object, maxAttempts = 3) {
       }
     }
   }
+}
+
+function runPdfWorker(slug: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    // Resolve from the project root — process.cwd() is the Next.js project when running `next dev`.
+    const script = path.resolve(process.cwd(), 'scripts/generatePDF.js');
+    const child = spawn(process.execPath, [script, slug], {
+      cwd: process.cwd(),
+      env: process.env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+
+    let stderr = '';
+    child.stdout?.on('data', (chunk) => process.stdout.write(`[pdf-worker] ${chunk}`));
+    child.stderr?.on('data', (chunk) => {
+      stderr += chunk.toString();
+      process.stderr.write(`[pdf-worker] ${chunk}`);
+    });
+
+    child.on('error', reject);
+    child.on('exit', (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`pdf worker exited ${code}: ${stderr.trim().slice(-500)}`));
+    });
+  });
 }
 
 async function runBuild(jobId: string, userQuery: string) {
@@ -169,15 +196,17 @@ async function runBuild(jobId: string, userQuery: string) {
 
     console.log(`[build] Phase 2 complete. slug="${slug}"`);
 
-    // ── Phase 3: Generate + upload PDF ───────────────────────────────────────
-    console.log(`[build] Phase 3: generating PDF for "${slug}"...`);
+    // ── Phase 3: Generate + upload PDF (subprocess to avoid webpack/lifecycle issues) ───
+    console.log(`[build] Phase 3: spawning PDF worker for "${slug}"...`);
     try {
-      const { buildAndStorePdf } = require('../../../../lib/generatePdf');
-      await buildAndStorePdf(slug);
+      await runPdfWorker(slug);
       console.log(`[build] Phase 3 complete. PDF stored for "${slug}"`);
     } catch (pdfErr: any) {
       // Non-fatal — product is still usable without PDF
-      console.error(`[build] Phase 3 (PDF) failed: ${pdfErr.message}`);
+      console.error(`[build] Phase 3 (PDF) failed for "${slug}":`, pdfErr?.message);
+      await supabase.from('products').update({
+        optimization_notes: `PDF_ERROR @ ${new Date().toISOString()}: ${pdfErr?.message}`.slice(0, 8000),
+      }).eq('slug', slug);
     }
   } catch (err: any) {
     console.error(`[build] Phase 2 failed: ${err.message}`);

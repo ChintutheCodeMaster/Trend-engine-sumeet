@@ -7,21 +7,11 @@ function getSupabase() {
 }
 
 async function launchBrowser() {
-  // Vercel / Lambda: use sparticuz chromium
-  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
-    const chromium = require('@sparticuz/chromium');
-    const puppeteer = require('puppeteer-core');
-    return puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-      defaultViewport: chromium.defaultViewport,
-    });
-  }
-
-  // Local dev: use bundled puppeteer
   const puppeteer = require('puppeteer');
-  return puppeteer.launch({ headless: true });
+  return puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+  });
 }
 
 /**

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 type Props = {
@@ -21,6 +21,8 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 function DownloadModalInner({ slug, headline, subheadline, category, stripeUrl }: Props) {
   const [open, setOpen] = useState(false);
+  const [downloadState, setDownloadState] = useState<'idle' | 'generating' | 'error'>('idle');
+  const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
@@ -29,8 +31,33 @@ function DownloadModalInner({ slug, headline, subheadline, category, stripeUrl }
     if (token) setOpen(true);
   }, [token]);
 
-  const downloadUrl = token ? `/api/download/${slug}?token=${token}` : null;
-  const hasPaid = !!downloadUrl;
+  useEffect(() => {
+    return () => {
+      if (pollRef.current) clearTimeout(pollRef.current);
+    };
+  }, []);
+
+  const hasPaid = !!token;
+
+  async function attemptDownload() {
+    setDownloadState('generating');
+    try {
+      const res = await fetch(`/api/download/${slug}?probe=1`, { cache: 'no-store' });
+      if (!res.ok) {
+        setDownloadState('error');
+        return;
+      }
+      const data = (await res.json()) as { ready: boolean; url?: string };
+      if (data.ready && data.url) {
+        setDownloadState('idle');
+        window.location.href = data.url;
+        return;
+      }
+      pollRef.current = setTimeout(attemptDownload, 4000);
+    } catch {
+      setDownloadState('error');
+    }
+  }
 
   return (
     <>
@@ -74,7 +101,10 @@ function DownloadModalInner({ slug, headline, subheadline, category, stripeUrl }
               overflow: 'hidden', animation: 'modalIn 0.2s ease',
             }}
           >
-            <style>{`@keyframes modalIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }`}</style>
+            <style>{`
+              @keyframes modalIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+              @keyframes spin { to { transform: rotate(360deg); } }
+            `}</style>
 
             {/* Book thumbnail */}
             <div style={{
@@ -109,16 +139,12 @@ function DownloadModalInner({ slug, headline, subheadline, category, stripeUrl }
 
               {hasPaid ? (
                 /* Customer already paid — show download button */
-                <a
-                  href={downloadUrl!}
-                  style={{
-                    display: 'block', background: '#16a34a', color: '#fff',
-                    borderRadius: 12, padding: '14px', fontSize: '1rem',
-                    fontWeight: 700, textDecoration: 'none', textAlign: 'center',
-                  }}
-                >
-                  Download your guide →
-                </a>
+                <DownloadButton
+                  state={downloadState}
+                  onClick={attemptDownload}
+                  color="#16a34a"
+                  label="Download your guide →"
+                />
               ) : stripeUrl ? (
                 /* Stripe is set up — show payment button */
                 <>
@@ -144,16 +170,12 @@ function DownloadModalInner({ slug, headline, subheadline, category, stripeUrl }
                 </>
               ) : (
                 /* Stripe not configured yet — direct download fallback */
-                <a
-                  href={`/api/download/${slug}`}
-                  style={{
-                    display: 'block', background: '#4f46e5', color: '#fff',
-                    borderRadius: 12, padding: '14px', fontSize: '1rem',
-                    fontWeight: 700, textDecoration: 'none', textAlign: 'center',
-                  }}
-                >
-                  Download your guide →
-                </a>
+                <DownloadButton
+                  state={downloadState}
+                  onClick={attemptDownload}
+                  color="#4f46e5"
+                  label="Download your guide →"
+                />
               )}
 
               <button
@@ -165,6 +187,59 @@ function DownloadModalInner({ slug, headline, subheadline, category, stripeUrl }
             </div>
           </div>
         </div>
+      )}
+    </>
+  );
+}
+
+function DownloadButton({
+  state,
+  onClick,
+  color,
+  label,
+}: {
+  state: 'idle' | 'generating' | 'error';
+  onClick: () => void;
+  color: string;
+  label: string;
+}) {
+  const isGenerating = state === 'generating';
+  return (
+    <>
+      <button
+        onClick={onClick}
+        disabled={isGenerating}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+          width: '100%',
+          background: isGenerating ? '#2a2a2a' : color, color: '#fff', border: 'none',
+          borderRadius: 12, padding: '14px', fontSize: '1rem',
+          fontWeight: 700, cursor: isGenerating ? 'default' : 'pointer', textAlign: 'center',
+        }}
+      >
+        {isGenerating ? (
+          <>
+            <span
+              style={{
+                width: 16, height: 16, borderRadius: '50%',
+                border: '2px solid rgba(255,255,255,0.25)',
+                borderTopColor: '#fff',
+                animation: 'spin 0.8s linear infinite',
+                display: 'inline-block',
+              }}
+            />
+            Generating — please wait a few moments…
+          </>
+        ) : state === 'error' ? (
+          'Something went wrong — tap to retry'
+        ) : (
+          label
+        )}
+      </button>
+      {isGenerating && (
+        <p style={{ color: '#666', fontSize: '0.78rem', textAlign: 'center', marginTop: 10 }}>
+          Your guide is still being prepared. This usually takes under a minute.
+        </p>
       )}
     </>
   );

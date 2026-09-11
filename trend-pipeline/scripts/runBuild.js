@@ -17,7 +17,10 @@ const { createPaymentLink } = require('../agents/stripeAgent');
 const puppeteer = require('puppeteer');
 
 function getSupabase() {
-  return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+  return createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY,
+  );
 }
 
 const CATEGORY_KEYWORDS = {
